@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Início - Simulador de Investimentos{% endblock %}
+{% block content %}
+<div style="text-align: center; color: white; padding: 3rem 0;">
+    <h1 style="font-size: 3rem; margin-bottom: 1rem;">Simulador de Investimentos</h1>
+    <p style="font-size: 1.25rem; opacity: 0.9; max-width: 600px; margin: 0 auto;">Compare diferentes tipos de investimentos e tome decisões mais inteligentes</p>
+</div>
+
+<div class="grid">
+    <div class="card" onclick="window.location.href='/simulacao'" style="cursor: pointer;">
+        <div class="card-header"><i class="fas fa-calculator"></i><h2>Simulação Individual</h2></div>
+        <p>Simule o rendimento de um investimento específico com parâmetros personalizados.</p>
+        <ul style="margin-top: 1rem; list-style: none;">
+            <li><i class="fas fa-check-circle" style="color: var(--success);"></i> CDB, LCI, LCA, CRI, CRA</li>
+            <li><i class="fas fa-check-circle" style="color: var(--success);"></i> IPCA+ e Prefixado</li>
+            <li><i class="fas fa-check-circle" style="color: var(--success);"></i> Ajuste pela inflação</li>
+            <li><i class="fas fa-check-circle" style="color: var(--success);"></i> Gráfico de evolução</li>
+        </ul>
+    </div>
+    <div class="card" onclick="window.location.href='/comparacao'" style="cursor: pointer;">
+        <div class="card-header"><i class="fas fa-scale-balanced"></i><h2>Comparação Completa</h2></div>
+        <p>Compare todos os investimentos lado a lado e descubra a melhor opção.</p>
+        <ul style="margin-top: 1rem; list-style: none;">
+            <li><i class="fas fa-check-circle" style="color: var(--success);"></i> Ranking de rentabilidade</li>
+            <li><i class="fas fa-check-circle" style="color: var(--success);"></i> Análise de risco</li>
+            <li><i class="fas fa-check-circle" style="color: var(--success);"></i> Índice de Sharpe</li>
+            <li><i class="fas fa-check-circle" style="color: var(--success);"></i> Gráficos comparativos</li>
+        </ul>
+    </div>
+    <div class="card" onclick="window.location.href='/calculadora'" style="cursor: pointer;">
+        <div class="card-header"><i class="fas fa-percent"></i><h2>Calculadora de Taxas</h2></div>
+        <p>Converta taxas entre investimentos isentos e tributados.</p>
+        <ul style="margin-top: 1rem; list-style: none;">
+            <li><i class="fas fa-check-circle" style="color: var(--success);"></i> CDB ↔ LCI/LCA</li>
+            <li><i class="fas fa-check-circle" style="color: var(--success);"></i> IPCA+ ↔ CDB</li>
+            <li><i class="fas fa-check-circle" style="color: var(--success);"></i> Tabela de IR</li>
+            <li><i class="fas fa-check-circle" style="color: var(--success);"></i> Cálculo preciso</li>
+        </ul>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header"><i class="fas fa-chart-line"></i><h2>Últimas Simulações</h2></div>
+    <div id="historico-container"><div class="alert alert-info"><i class="fas fa-spinner fa-spin"></i> Carregando...</div></div>
+</div>
+
+<div style="background: rgba(255,255,255,0.1); color: white; padding: 2rem; border-radius: var(--border-radius); margin: 2rem 0;">
+    <div style="display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
+        <i class="fas fa-lightbulb" style="font-size: 3rem;"></i>
+        <div><h3 style="margin-bottom: 0.5rem;">Dica do Especialista</h3><p>Para prazos curtos (até 2 anos), investimentos isentos como LCI/LCA geralmente superam o CDB. Para prazos longos, títulos atrelados ao IPCA oferecem proteção contra a inflação.</p></div>
+    </div>
+</div>
+<script>document.addEventListener('DOMContentLoaded', carregarHistorico);</script>
+{% endblock %}

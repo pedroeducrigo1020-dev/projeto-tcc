@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Histórico - Simulador de Investimentos{% endblock %}
+{% block content %}
+<h1 class="page-title"><i class="fas fa-history"></i> Histórico de Simulações</h1>
+<div class="card">
+    <div class="card-header"><i class="fas fa-list"></i><h2>Todas as Simulações</h2></div>
+    <div id="historico-container"><div class="alert alert-info"><i class="fas fa-spinner fa-spin"></i> Carregando histórico...</div></div>
+    <div style="margin-top: 1.5rem; text-align: right;"><button class="btn btn-primary" onclick="window.location.href='/simulacao'"><i class="fas fa-plus"></i> Nova Simulação</button></div>
+</div>
+<script>document.addEventListener('DOMContentLoaded', carregarHistorico);</script>
+{% endblock %}

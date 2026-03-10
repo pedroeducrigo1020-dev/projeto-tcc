@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Simulação - Simulador de Investimentos{% endblock %}
+{% block content %}
+<h1 class="page-title"><i class="fas fa-calculator"></i> Simulação de Investimento</h1>
+
+<div class="grid">
+    <div class="card">
+        <div class="card-header"><i class="fas fa-chart-pie"></i><h2>Escolha o Investimento</h2></div>
+        <div class="investimentos-grid">
+            {% for inv in investimentos %}
+            <div class="investimento-card" data-id="{{ loop.index0 }}" onclick="selecionarInvestimento(this)">
+                <div class="investimento-icon"><i class="fas fa-chart-line"></i></div>
+                <div class="investimento-nome">{{ inv.nome }}</div>
+                <div>
+                    <span class="tag {% if inv.tipo_ir.value == 'Isento' %}tag-isento{% else %}tag-tributado{% endif %}">{{ inv.tipo_ir.value }}</span>
+                    <span class="tag">{{ inv.indexador.value }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><i class="fas fa-sliders-h"></i><h2>Parâmetros</h2></div>
+        <form id="form-simulacao" onsubmit="event.preventDefault(); simular();">
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-coins"></i> Valor Inicial (R$)</label>
+                <input type="text" class="form-control moeda" id="valor_inicial" value="1.000,00" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-clock"></i> Período (meses)</label>
+                <div class="range-container">
+                    <input type="range" class="range-slider" id="meses" min="1" max="480" value="12" step="1">
+                    <span class="range-value" id="meses_valor">12 meses</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-calendar-plus"></i> Aporte Mensal (R$)</label>
+                <input type="text" class="form-control moeda" id="aporte_mensal" value="0,00">
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-chart-line"></i> Inflação Anual (%)</label>
+                <div class="range-container">
+                    <input type="range" class="range-slider" id="inflacao" min="0" max="20" value="4" step="0.1">
+                    <span class="range-value" id="inflacao_valor">4,0%</span>
+                </div>
+            </div>
+            <h3 style="margin: 1.5rem 0 1rem;">Cenário Econômico</h3>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-percent"></i> CDI (% a.a.)</label>
+                <div class="range-container">
+                    <input type="range" class="range-slider" id="taxa_cdi" min="0" max="30" value="10" step="0.1">
+                    <span class="range-value" id="taxa_cdi_valor">10,0%</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-chart-bar"></i> % do CDI</label>
+                <div class="range-container">
+                    <input type="range" class="range-slider" id="percentual_cdi" min="0" max="200" value="100" step="1">
+                    <span class="range-value" id="percentual_cdi_valor">100%</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-tachometer-alt"></i> IPCA (% a.a.)</label>
+                <div class="range-container">
+                    <input type="range" class="range-slider" id="ipca" min="0" max="20" value="4" step="0.1">
+                    <span class="range-value" id="ipca_valor">4,0%</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-plus-circle"></i> Taxa Prefixada (% a.a.)</label>
+                <div class="range-container">
+                    <input type="range" class="range-slider" id="taxa_prefixada" min="0" max="20" value="5" step="0.1">
+                    <span class="range-value" id="taxa_prefixada_valor">5,0%</span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-play"></i> Simular</button>
+        </form>
+    </div>
+</div>
+<div id="resultado-container"></div>
+{% endblock %}

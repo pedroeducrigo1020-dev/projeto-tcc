@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Calculadora de Taxas - Simulador{% endblock %}
+{% block content %}
+<h1 class="page-title"><i class="fas fa-percent"></i> Calculadora de Taxas Equivalentes</h1>
+
+<div class="grid">
+    <div class="card">
+        <div class="card-header"><i class="fas fa-calculator"></i><h2>Conversão de Taxas</h2></div>
+        <form id="form-calculadora" onsubmit="event.preventDefault(); calcularTaxa();">
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-exchange-alt"></i> Tipo de Conversão</label>
+                <select class="form-control" id="tipo_conversao" required>
+                    <option value="cdb_para_isento">CDB → LCI/LCA (Isento)</option>
+                    <option value="isento_para_cdb">LCI/LCA → CDB (Tributado)</option>
+                    <option value="ipca_para_cdb">IPCA+ → CDB</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-percent"></i> Taxa Original (% a.a.)</label>
+                <input type="number" class="form-control" id="taxa_original" step="0.1" min="0" value="10" required>
+            </div>
+            <div class="form-group" id="campo_ipca">
+                <label class="form-label"><i class="fas fa-chart-line"></i> IPCA Projetado (% a.a.)</label>
+                <input type="number" class="form-control" id="ipca_projetado" step="0.1" min="0" value="4">
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-calendar-alt"></i> Prazo (dias)</label>
+                <select class="form-control" id="prazo_dias">
+                    <option value="180">Até 180 dias</option>
+                    <option value="360" selected>181 a 360 dias</option>
+                    <option value="720">361 a 720 dias</option>
+                    <option value="1080">Acima de 720 dias</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-calculator"></i> Calcular</button>
+        </form>
+        <div id="resultado-taxa" style="margin-top: 1.5rem;"></div>
+    </div>
+    <div class="card">
+        <div class="card-header"><i class="fas fa-table"></i><h2>Tabela de IR</h2></div>
+        <div class="table-container">
+            <table>
+                <thead><tr><th>Prazo</th><th>Alíquota</th></tr></thead>
+                <tbody>
+                    <tr><td>Até 180 dias</td><td><strong>22,5%</strong></td></tr>
+                    <tr><td>181 a 360 dias</td><td><strong>20,0%</strong></td></tr>
+                    <tr><td>361 a 720 dias</td><td><strong>17,5%</strong></td></tr>
+                    <tr><td>Acima de 720 dias</td><td><strong>15,0%</strong></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="alert alert-info"><i class="fas fa-calculator"></i> <div><strong>Fórmula:</strong><br>Taxa CDB = Taxa Isenta ÷ (1 - Alíquota)<br>Taxa Isenta = Taxa CDB × (1 - Alíquota)</div></div>
+    </div>
+</div>
+
+<script>
+document.getElementById('tipo_conversao').addEventListener('change', function() {
+    document.getElementById('campo_ipca').style.display = this.value === 'ipca_para_cdb' ? 'block' : 'none';
+});
+</script>
+{% endblock %}
