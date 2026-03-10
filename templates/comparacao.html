@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Comparar Investimentos - Simulador{% endblock %}
+
+{% block content %}
+<h1 class="page-title">
+    <i class="fas fa-scale-balanced"></i>
+    Comparar Todos os Investimentos
+</h1>
+
+<div class="grid">
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-sliders-h"></i>
+            <h2>Parâmetros da Comparação</h2>
+        </div>
+        
+        <form id="form-comparacao" onsubmit="event.preventDefault(); realizarComparacao();">
+            <div class="form-group">
+                <label class="form-label" for="comp_valor_inicial">
+                    <i class="fas fa-coins"></i> Valor Inicial (R$)
+                </label>
+                <input type="text" class="form-control moeda" id="comp_valor_inicial" 
+                       placeholder="R$ 10.000,00" value="10000,00" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="comp_meses">
+                    <i class="fas fa-clock"></i> Período (meses)
+                </label>
+                <input type="number" class="form-control" id="comp_meses" 
+                       min="1" max="480" value="12" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="comp_aporte">
+                    <i class="fas fa-calendar-plus"></i> Aporte Mensal (R$)
+                </label>
+                <input type="text" class="form-control moeda" id="comp_aporte" 
+                       placeholder="R$ 0,00" value="0,00">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="comp_taxa_cdi">
+                    <i class="fas fa-percent"></i> CDI Atual (% a.a.)
+                </label>
+                <input type="number" class="form-control" id="comp_taxa_cdi" 
+                       min="0" max="30" step="0.1" value="10.0" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="comp_ipca">
+                    <i class="fas fa-tachometer-alt"></i> IPCA Projetado (% a.a.)
+                </label>
+                <input type="number" class="form-control" id="comp_ipca" 
+                       min="0" max="20" step="0.1" value="4.0" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <i class="fas fa-chart-bar"></i> Comparar Investimentos
+            </button>
+        </form>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-info-circle"></i>
+            <h2>Sobre a Comparação</h2>
+        </div>
+        <p>Esta ferramenta compara todos os tipos de investimento disponíveis usando os mesmos parâmetros:</p>
+        <ul class="feature-list">
+            <li><i class="fas fa-check-circle"></i> CDB (tributado)</li>
+            <li><i class="fas fa-check-circle"></i> LCI (isento)</li>
+            <li><i class="fas fa-check-circle"></i> LCA (isento)</li>
+            <li><i class="fas fa-check-circle"></i> LCD (isento)</li>
+            <li><i class="fas fa-check-circle"></i> CRI (isento)</li>
+            <li><i class="fas fa-check-circle"></i> CRA (isento)</li>
+            <li><i class="fas fa-check-circle"></i> IPCA+ (tributado)</li>
+            <li><i class="fas fa-check-circle"></i> CDB Híbrido (tributado)</li>
+        </ul>
+        <div class="alert alert-info">
+            <i class="fas fa-lightbulb"></i>
+            <span>Os resultados consideram a tabela regressiva de IR para investimentos tributados e a carência de cada produto.</span>
+        </div>
+    </div>
+</div>
+
+<div class="chart-container">
+    <canvas id="grafico-comparativo"></canvas>
+</div>
+
+<div id="comparacao-container"></div>
+{% endblock %}
