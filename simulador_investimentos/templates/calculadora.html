@@ -2,7 +2,6 @@
 {% block title %}Calculadora de Taxas - Simulador{% endblock %}
 {% block content %}
 <h1 class="page-title"><i class="fas fa-percent"></i> Calculadora de Taxas Equivalentes</h1>
-
 <div class="grid">
     <div class="card">
         <div class="card-header"><i class="fas fa-calculator"></i><h2>Conversão de Taxas</h2></div>
@@ -39,20 +38,16 @@
     <div class="card">
         <div class="card-header"><i class="fas fa-table"></i><h2>Tabela de IR</h2></div>
         <div class="table-container">
-            <table>
-                <thead><tr><th>Prazo</th><th>Alíquota</th></tr></thead>
-                <tbody>
-                    <tr><td>Até 180 dias</td><td><strong>22,5%</strong></td></tr>
-                    <tr><td>181 a 360 dias</td><td><strong>20,0%</strong></td></tr>
-                    <tr><td>361 a 720 dias</td><td><strong>17,5%</strong></td></tr>
-                    <tr><td>Acima de 720 dias</td><td><strong>15,0%</strong></td></tr>
-                </tbody>
-            </table>
+            <table><thead><tr><th>Prazo</th><th>Alíquota</th></tr></thead><tbody>
+                <tr><td>Até 180 dias</td><td><strong>22,5%</strong></td></tr>
+                <tr><td>181 a 360 dias</td><td><strong>20,0%</strong></td></tr>
+                <tr><td>361 a 720 dias</td><td><strong>17,5%</strong></td></tr>
+                <tr><td>Acima de 720 dias</td><td><strong>15,0%</strong></td></tr>
+            </tbody></table>
         </div>
-        <div class="alert alert-info"><i class="fas fa-calculator"></i> <div><strong>Fórmula:</strong><br>Taxa CDB = Taxa Isenta ÷ (1 - Alíquota)<br>Taxa Isenta = Taxa CDB × (1 - Alíquota)</div></div>
+        <div class="alert alert-info" style="margin-top: 1rem;"><i class="fas fa-calculator"></i><div><strong>Fórmula:</strong><br>Taxa CDB = Taxa Isenta ÷ (1 - Alíquota)<br>Taxa Isenta = Taxa CDB × (1 - Alíquota)</div></div>
     </div>
 </div>
-
 <script>
 document.getElementById('tipo_conversao').addEventListener('change', function() {
     document.getElementById('campo_ipca').style.display = this.value === 'ipca_para_cdb' ? 'block' : 'none';

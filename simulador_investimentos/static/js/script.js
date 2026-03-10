@@ -1,11 +1,7 @@
-// ===== FORMATADOR =====
 const Formatador = {
     moeda: (valor) => {
         if (isNaN(valor) || valor === null) return 'R$ 0,00';
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        }).format(valor);
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valor);
     },
     percentual: (valor) => {
         if (isNaN(valor) || valor === null) return '0,00%';
@@ -13,28 +9,20 @@ const Formatador = {
     },
     numero: (valor, casas = 2) => {
         if (isNaN(valor) || valor === null) return '0';
-        return new Intl.NumberFormat('pt-BR', {
-            minimumFractionDigits: casas,
-            maximumFractionDigits: casas
-        }).format(valor);
+        return new Intl.NumberFormat('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas }).format(valor);
     }
 };
 
-// ===== LOADING =====
 const Loading = {
     show: () => document.getElementById('loading')?.classList.add('active'),
     hide: () => document.getElementById('loading')?.classList.remove('active')
 };
 
-// ===== NOTIFICAÇÕES =====
 const Notificacao = {
     show: (msg, tipo = 'success') => {
         const notif = document.createElement('div');
         notif.className = `alert alert-${tipo}`;
-        notif.innerHTML = `
-            <i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
-            <span>${msg}</span>
-        `;
+        notif.innerHTML = `<i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><span>${msg}</span>`;
         notif.style.position = 'fixed';
         notif.style.top = '20px';
         notif.style.right = '20px';
@@ -50,7 +38,6 @@ const Notificacao = {
     }
 };
 
-// ===== GRÁFICOS =====
 const Graficos = {
     charts: {},
     criarEvolucao: (canvasId, projecoes) => {
@@ -62,43 +49,14 @@ const Graficos = {
             data: {
                 labels: projecoes.map(p => `Mês ${p.mes}`),
                 datasets: [
-                    {
-                        label: 'Montante',
-                        data: projecoes.map(p => p.montante),
-                        borderColor: '#4361ee',
-                        backgroundColor: 'rgba(67, 97, 238, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4
-                    },
-                    {
-                        label: 'Investido',
-                        data: projecoes.map(p => p.investido),
-                        borderColor: '#4cc9f0',
-                        borderWidth: 2,
-                        borderDash: [5, 5],
-                        fill: false,
-                        tension: 0.4
-                    }
+                    { label: 'Montante', data: projecoes.map(p => p.montante), borderColor: '#4361ee', backgroundColor: 'rgba(67,97,238,0.1)', borderWidth: 3, fill: true, tension: 0.4 },
+                    { label: 'Investido', data: projecoes.map(p => p.investido), borderColor: '#4cc9f0', borderWidth: 2, borderDash: [5,5], fill: false, tension: 0.4 }
                 ]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: (ctx) => `${ctx.dataset.label}: ${Formatador.moeda(ctx.raw)}`
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        ticks: {
-                            callback: (v) => Formatador.moeda(v)
-                        }
-                    }
-                }
+                responsive: true, maintainAspectRatio: false,
+                plugins: { tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${Formatador.moeda(ctx.raw)}` } } },
+                scales: { y: { ticks: { callback: (v) => Formatador.moeda(v) } } }
             }
         });
     },
@@ -111,92 +69,48 @@ const Graficos = {
             data: {
                 labels: resultados.map(r => r.nome),
                 datasets: [
-                    {
-                        label: 'Montante Final',
-                        data: resultados.map(r => r.montante),
-                        backgroundColor: '#4361ee',
-                        borderRadius: 8,
-                        yAxisID: 'y'
-                    },
-                    {
-                        label: 'Rentabilidade %',
-                        data: resultados.map(r => r.rentabilidade),
-                        backgroundColor: '#4cc9f0',
-                        borderRadius: 8,
-                        yAxisID: 'y1'
-                    }
+                    { label: 'Montante Final', data: resultados.map(r => r.montante), backgroundColor: '#4361ee', borderRadius: 8, yAxisID: 'y' },
+                    { label: 'Rentabilidade %', data: resultados.map(r => r.rentabilidade), backgroundColor: '#4cc9f0', borderRadius: 8, yAxisID: 'y1' }
                 ]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                responsive: true, maintainAspectRatio: false,
                 plugins: {
                     tooltip: {
                         callbacks: {
-                            label: (ctx) => {
-                                if (ctx.dataset.label.includes('Montante')) {
-                                    return `${ctx.dataset.label}: ${Formatador.moeda(ctx.raw)}`;
-                                }
-                                return `${ctx.dataset.label}: ${ctx.raw.toFixed(2)}%`;
-                            }
+                            label: (ctx) => ctx.dataset.label.includes('Montante')
+                                ? `${ctx.dataset.label}: ${Formatador.moeda(ctx.raw)}`
+                                : `${ctx.dataset.label}: ${ctx.raw.toFixed(2)}%`
                         }
                     }
                 },
                 scales: {
-                    y: {
-                        position: 'left',
-                        ticks: { callback: (v) => Formatador.moeda(v) }
-                    },
-                    y1: {
-                        position: 'right',
-                        grid: { drawOnChartArea: false },
-                        ticks: { callback: (v) => v + '%' }
-                    }
+                    y: { position: 'left', ticks: { callback: (v) => Formatador.moeda(v) } },
+                    y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { callback: (v) => v + '%' } }
                 }
             }
         });
     }
 };
 
-// ===== MÁSCARA DE MOEDA =====
 function aplicarMascaraMoeda(input) {
     input.addEventListener('input', (e) => {
         let valor = e.target.value.replace(/\D/g, '');
         if (valor) {
             valor = (parseInt(valor) / 100).toFixed(2);
             e.target.value = Formatador.moeda(valor).replace('R$', '').trim();
-        } else {
-            e.target.value = '';
-        }
+        } else e.target.value = '';
     });
 }
 
-// ===== INICIALIZAÇÃO =====
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.moeda').forEach(aplicarMascaraMoeda);
-    document.querySelectorAll('.range-slider').forEach(slider => {
-        const valorId = slider.id + '_valor';
-        const valorEl = document.getElementById(valorId);
-        if (valorEl) {
-            const atualizar = () => {
-                valorEl.textContent = slider.value + (slider.id.includes('meses') ? ' meses' : '%');
-            };
-            slider.addEventListener('input', atualizar);
-            atualizar();
-        }
-    });
-    if (window.location.pathname === '/historico') {
-        carregarHistorico();
-    }
+    if (window.location.pathname === '/historico') carregarHistorico();
 });
 
-// ===== SIMULAÇÃO =====
 async function simular() {
     const investimentoCard = document.querySelector('.investimento-card.selected');
-    if (!investimentoCard) {
-        Notificacao.show('Selecione um investimento!', 'warning');
-        return;
-    }
+    if (!investimentoCard) { Notificacao.show('Selecione um investimento!', 'warning'); return; }
     const investimentoId = investimentoCard.dataset.id;
     Loading.show();
     try {
@@ -213,29 +127,15 @@ async function simular() {
             taxa_prefixada: parseFloat(document.getElementById('taxa_prefixada')?.value) || 5,
             inflacao: parseFloat(document.getElementById('inflacao')?.value) || 4
         };
-        if (dados.valor_inicial <= 0) {
-            Notificacao.show('Valor inicial deve ser maior que zero', 'warning');
-            Loading.hide();
-            return;
-        }
+        if (dados.valor_inicial <= 0) { Notificacao.show('Valor inicial deve ser maior que zero', 'warning'); Loading.hide(); return; }
         const response = await fetch('/api/simular', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados)
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados)
         });
         const result = await response.json();
-        if (result.sucesso) {
-            exibirResultado(result.resultado);
-            Notificacao.show('Simulação concluída!');
-        } else {
-            Notificacao.show(result.erro || 'Erro na simulação', 'danger');
-        }
-    } catch (error) {
-        console.error(error);
-        Notificacao.show('Erro de conexão com o servidor', 'danger');
-    } finally {
-        Loading.hide();
-    }
+        if (result.sucesso) { exibirResultado(result.resultado); Notificacao.show('Simulação concluída!'); }
+        else { Notificacao.show(result.erro || 'Erro na simulação', 'danger'); }
+    } catch (error) { console.error(error); Notificacao.show('Erro de conexão', 'danger'); }
+    finally { Loading.hide(); }
 }
 
 function exibirResultado(r) {
@@ -244,105 +144,37 @@ function exibirResultado(r) {
     const riscoClass = r.volatilidade < 5 ? 'success' : (r.volatilidade < 15 ? 'warning' : 'danger');
     const riscoTexto = r.volatilidade < 5 ? 'Baixo' : (r.volatilidade < 15 ? 'Médio' : 'Alto');
     const irHtml = r.imposto_pago > 0
-        ? `<div class="resultado-item">
-               <div class="resultado-label">IR Pago</div>
-               <div class="resultado-valor warning">${Formatador.moeda(r.imposto_pago)}</div>
-               <small>Alíquota: ${r.aliquota_ir.toFixed(1)}%</small>
-           </div>`
-        : `<div class="resultado-item">
-               <div class="resultado-label">Imposto de Renda</div>
-               <div class="resultado-valor success">ISENTO</div>
-           </div>`;
+        ? `<div class="resultado-item"><div class="resultado-label">IR Pago</div><div class="resultado-valor warning">${Formatador.moeda(r.imposto_pago)}</div><small>Alíquota: ${r.aliquota_ir.toFixed(1)}%</small></div>`
+        : `<div class="resultado-item"><div class="resultado-label">Imposto de Renda</div><div class="resultado-valor success">ISENTO</div></div>`;
+    let sharpeClass = 'danger', sharpeText = 'Ruim';
+    if (r.sharpe_ratio > 1) { sharpeClass = 'success'; sharpeText = 'Excelente'; }
+    else if (r.sharpe_ratio > 0.5) { sharpeClass = 'warning'; sharpeText = 'Bom'; }
+    else if (r.sharpe_ratio > 0) { sharpeClass = 'warning'; sharpeText = 'Regular'; }
     container.innerHTML = `
         <div class="card">
-            <div class="card-header">
-                <i class="fas fa-chart-line"></i>
-                <h2>Resultado - ${r.nome}</h2>
-            </div>
+            <div class="card-header"><i class="fas fa-chart-line"></i><h2>Resultado - ${r.nome}</h2></div>
             <div class="resultados-grid">
-                <div class="resultado-item">
-                    <div class="resultado-label">Total Investido</div>
-                    <div class="resultado-valor">${Formatador.moeda(r.total_investido)}</div>
-                </div>
-                <div class="resultado-item">
-                    <div class="resultado-label">Montante Líquido</div>
-                    <div class="resultado-valor success">${Formatador.moeda(r.montante_liquido)}</div>
-                </div>
-                <div class="resultado-item">
-                    <div class="resultado-label">Montante Real</div>
-                    <div class="resultado-valor success">${Formatador.moeda(r.montante_real || r.montante_liquido)}</div>
-                    <small>Ajustado inflação</small>
-                </div>
-                <div class="resultado-item">
-                    <div class="resultado-label">Rentabilidade</div>
-                    <div class="resultado-valor success">${Formatador.percentual(r.rentabilidade_liquida)}</div>
-                </div>
+                <div class="resultado-item"><div class="resultado-label">Total Investido</div><div class="resultado-valor">${Formatador.moeda(r.total_investido)}</div></div>
+                <div class="resultado-item"><div class="resultado-label">Montante Líquido</div><div class="resultado-valor success">${Formatador.moeda(r.montante_liquido)}</div></div>
+                <div class="resultado-item"><div class="resultado-label">Rentabilidade</div><div class="resultado-valor success">${Formatador.percentual(r.rentabilidade_liquida)}</div></div>
+                <div class="resultado-item"><div class="resultado-label">Rentabilidade Real</div><div class="resultado-valor ${r.rentabilidade_real > 0 ? 'success' : 'danger'}">${Formatador.percentual(r.rentabilidade_real)}</div></div>
             </div>
             <div class="resultados-grid">
                 ${irHtml}
-                <div class="resultado-item">
-                    <div class="resultado-label">Rentabilidade Real</div>
-                    <div class="resultado-valor ${r.rentabilidade_real > 0 ? 'success' : 'danger'}">
-                        ${Formatador.percentual(r.rentabilidade_real)}
-                    </div>
-                </div>
-                <div class="resultado-item">
-                    <div class="resultado-label">Volatilidade</div>
-                    <div class="resultado-valor" style="color: var(--${riscoClass})">
-                        ${Formatador.percentual(r.volatilidade)}
-                    </div>
-                    <small>Risco ${riscoTexto}</small>
-                </div>
-                <div class="resultado-item">
-                    <div class="resultado-label">Sharpe Ratio</div>
-                    <div class="resultado-valor ${r.sharpe_ratio > 1 ? 'success' : (r.sharpe_ratio > 0 ? 'warning' : 'danger')}">
-                        ${r.sharpe_ratio.toFixed(3)}
-                    </div>
-                </div>
+                <div class="resultado-item"><div class="resultado-label">Volatilidade</div><div class="resultado-valor" style="color: var(--${riscoClass})">${Formatador.percentual(r.volatilidade)}</div><small>Risco ${riscoTexto}</small></div>
+                <div class="resultado-item"><div class="resultado-label">Sharpe Ratio</div><div class="resultado-valor" style="color: var(--${sharpeClass})">${r.sharpe_ratio.toFixed(3)}</div><small>${sharpeText}</small></div>
+                <div class="resultado-item"><div class="resultado-label">Período</div><div class="resultado-valor">${r.meses} meses</div></div>
             </div>
-            <div class="chart-container">
-                <canvas id="grafico-evolucao"></canvas>
-            </div>
-            <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end;">
-                <button class="btn btn-outline" onclick="gerarPDF()">
-                    <i class="fas fa-file-pdf"></i> PDF
-                </button>
+            <div class="chart-container"><canvas id="grafico-evolucao"></canvas></div>
+            <div style="margin-top:1.5rem; display:flex; gap:1rem; justify-content:flex-end;">
+                <button class="btn btn-outline" onclick="gerarPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
             </div>
         </div>
     `;
-    if (r.projecoes && r.projecoes.length) {
-        setTimeout(() => Graficos.criarEvolucao('grafico-evolucao', r.projecoes), 100);
-    }
+    if (r.projecoes && r.projecoes.length) setTimeout(() => Graficos.criarEvolucao('grafico-evolucao', r.projecoes), 100);
     window.ultimoResultado = r;
 }
 
-async function gerarPDF() {
-    if (!window.ultimoResultado) {
-        Notificacao.show('Nenhum resultado para gerar PDF', 'warning');
-        return;
-    }
-    Loading.show();
-    try {
-        const response = await fetch('/api/gerar-relatorio', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ resultado: window.ultimoResultado })
-        });
-        const result = await response.json();
-        if (result.sucesso) {
-            window.open(`/download/${result.arquivo}`, '_blank');
-            Notificacao.show('PDF gerado com sucesso!');
-        } else {
-            Notificacao.show(result.erro || 'Erro ao gerar PDF', 'danger');
-        }
-    } catch (error) {
-        Notificacao.show('Erro de conexão', 'danger');
-    } finally {
-        Loading.hide();
-    }
-}
-
-// ===== COMPARAÇÃO =====
 async function comparar() {
     Loading.show();
     try {
@@ -357,23 +189,13 @@ async function comparar() {
             inflacao: parseFloat(document.getElementById('comp_inflacao')?.value) || 4
         };
         const response = await fetch('/api/comparar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados)
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados)
         });
         const result = await response.json();
-        if (result.sucesso) {
-            exibirComparacao(result.resultados);
-            Notificacao.show('Comparação concluída!');
-        } else {
-            Notificacao.show(result.erro || 'Erro na comparação', 'danger');
-        }
-    } catch (error) {
-        console.error(error);
-        Notificacao.show('Erro de conexão', 'danger');
-    } finally {
-        Loading.hide();
-    }
+        if (result.sucesso) { exibirComparacao(result.resultados); Notificacao.show('Comparação concluída!'); }
+        else { Notificacao.show(result.erro || 'Erro na comparação', 'danger'); }
+    } catch (error) { console.error(error); Notificacao.show('Erro de conexão', 'danger'); }
+    finally { Loading.hide(); }
 }
 
 function exibirComparacao(resultados) {
@@ -381,97 +203,40 @@ function exibirComparacao(resultados) {
     if (!container) return;
     let html = `
         <div class="card">
-            <div class="card-header">
-                <i class="fas fa-chart-bar"></i>
-                <h2>Comparação de Investimentos</h2>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Investimento</th>
-                            <th>Montante</th>
-                            <th>Rentab.</th>
-                            <th>Real</th>
-                            <th>Risco</th>
-                            <th>Sharpe</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <div class="card-header"><i class="fas fa-chart-bar"></i><h2>Comparação de Investimentos</h2></div>
+            <div class="table-container"><table><thead><tr><th>#</th><th>Investimento</th><th>Montante</th><th>Rentab.</th><th>Real</th><th>Risco</th><th>Sharpe</th></tr></thead><tbody>
     `;
     resultados.forEach((r, i) => {
         const medalha = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i+1}º`;
         const riscoClass = r.volatilidade < 5 ? 'success' : (r.volatilidade < 15 ? 'warning' : 'danger');
         const riscoBg = riscoClass === 'success' ? '#d4edda' : (riscoClass === 'warning' ? '#fff3cd' : '#f8d7da');
-        html += `
-            <tr>
-                <td><strong>${medalha}</strong></td>
-                <td><strong>${r.nome}</strong></td>
-                <td>${Formatador.moeda(r.montante)}</td>
-                <td>${Formatador.percentual(r.rentabilidade)}</td>
-                <td>${Formatador.percentual(r.rentabilidade_real)}</td>
-                <td><span class="tag" style="background: ${riscoBg};">${r.volatilidade.toFixed(1)}%</span></td>
-                <td>${r.sharpe_ratio.toFixed(3)}</td>
-            </tr>
-        `;
+        html += `<tr><td><strong>${medalha}</strong></td><td><strong>${r.nome}</strong></td><td>${Formatador.moeda(r.montante)}</td><td>${Formatador.percentual(r.rentabilidade)}</td><td>${Formatador.percentual(r.rentabilidade_real)}</td><td><span class="tag" style="background:${riscoBg};">${r.volatilidade.toFixed(1)}%</span></td><td>${r.sharpe_ratio.toFixed(3)}</td></tr>`;
     });
-    html += `
-                    </tbody>
-                </table>
-            </div>
-            <div class="chart-container">
-                <canvas id="grafico-comparativo"></canvas>
-            </div>
-        </div>
-    `;
+    html += `</tbody></table></div><div class="chart-container"><canvas id="grafico-comparativo"></canvas></div></div>`;
     container.innerHTML = html;
     setTimeout(() => Graficos.criarComparativo('grafico-comparativo', resultados), 100);
 }
 
-// ===== CALCULADORA =====
 async function calcularTaxa() {
     const tipo = document.getElementById('tipo_conversao')?.value;
     const taxa = parseFloat(document.getElementById('taxa_original')?.value) || 0;
     const dias = parseInt(document.getElementById('prazo_dias')?.value) || 360;
     const ipca = parseFloat(document.getElementById('ipca_projetado')?.value) || 4;
-    if (taxa <= 0) {
-        Notificacao.show('Digite uma taxa válida!', 'warning');
-        return;
-    }
+    if (taxa <= 0) { Notificacao.show('Digite uma taxa válida!', 'warning'); return; }
     Loading.show();
     try {
         const response = await fetch('/api/taxas', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tipo, taxa, dias, ipca })
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tipo, taxa, dias, ipca })
         });
         const result = await response.json();
         if (result.sucesso) {
-            const container = document.getElementById('resultado-taxa');
-            if (container) {
-                container.innerHTML = `
-                    <div class="alert alert-success">
-                        <i class="fas fa-check-circle"></i>
-                        <div>
-                            <strong>Resultado:</strong><br>
-                            ${result.descricao}
-                        </div>
-                    </div>
-                `;
-            }
+            document.getElementById('resultado-taxa').innerHTML = `<div class="alert alert-success"><i class="fas fa-check-circle"></i><div><strong>Resultado:</strong><br>${result.descricao}</div></div>`;
             Notificacao.show('Cálculo realizado!');
-        } else {
-            Notificacao.show(result.erro || 'Erro no cálculo', 'danger');
-        }
-    } catch (error) {
-        Notificacao.show('Erro de conexão', 'danger');
-    } finally {
-        Loading.hide();
-    }
+        } else { Notificacao.show(result.erro || 'Erro no cálculo', 'danger'); }
+    } catch (error) { console.error(error); Notificacao.show('Erro de conexão', 'danger'); }
+    finally { Loading.hide(); }
 }
 
-// ===== HISTÓRICO =====
 async function carregarHistorico() {
     const container = document.getElementById('historico-container');
     if (!container) return;
@@ -480,61 +245,32 @@ async function carregarHistorico() {
         const response = await fetch('/api/historico');
         const data = await response.json();
         if (data.historico && data.historico.length > 0) {
-            let html = `
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Data</th>
-                                <th>Investimento</th>
-                                <th>Valor Inicial</th>
-                                <th>Resultado</th>
-                                <th>Rentabilidade</th>
-                                <th>Lucro</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-            `;
+            let html = `<div class="table-container"><table><thead><tr><th>Data</th><th>Investimento</th><th>Valor Inicial</th><th>Resultado</th><th>Rentabilidade</th><th>Lucro</th></tr></thead><tbody>`;
             data.historico.slice().reverse().forEach(item => {
                 const lucro = item.montante - item.valor;
-                html += `
-                    <tr>
-                        <td>${item.data}</td>
-                        <td><strong>${item.nome}</strong></td>
-                        <td>${Formatador.moeda(item.valor)}</td>
-                        <td style="color: var(--success); font-weight: 600;">${Formatador.moeda(item.montante)}</td>
-                        <td>${Formatador.percentual(item.rentabilidade)}</td>
-                        <td>${Formatador.moeda(lucro)}</td>
-                    </tr>
-                `;
+                html += `<tr><td>${item.data}</td><td><strong>${item.nome}</strong></td><td>${Formatador.moeda(item.valor)}</td><td style="color:var(--success);font-weight:600;">${Formatador.moeda(item.montante)}</td><td>${Formatador.percentual(item.rentabilidade)}</td><td>${Formatador.moeda(lucro)}</td></tr>`;
             });
-            html += `
-                        </tbody>
-                    </table>
-                </div>
-            `;
+            html += `</tbody></table></div>`;
             container.innerHTML = html;
-        } else {
-            container.innerHTML = `
-                <div class="alert alert-info">
-                    <i class="fas fa-info-circle"></i>
-                    Nenhuma simulação encontrada. Faça sua primeira simulação!
-                </div>
-            `;
-        }
-    } catch (error) {
-        container.innerHTML = `
-            <div class="alert alert-danger">
-                <i class="fas fa-exclamation-circle"></i>
-                Erro ao carregar histórico.
-            </div>
-        `;
-    } finally {
-        Loading.hide();
-    }
+        } else { container.innerHTML = `<div class="alert alert-info"><i class="fas fa-info-circle"></i> Nenhuma simulação encontrada. Faça sua primeira simulação!</div>`; }
+    } catch (error) { console.error(error); container.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Erro ao carregar histórico.</div>`; }
+    finally { Loading.hide(); }
 }
 
-// ===== SELEÇÃO DE INVESTIMENTO =====
+async function gerarPDF() {
+    if (!window.ultimoResultado) { Notificacao.show('Nenhum resultado para gerar PDF', 'warning'); return; }
+    Loading.show();
+    try {
+        const response = await fetch('/api/gerar-pdf', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ resultado: window.ultimoResultado })
+        });
+        const result = await response.json();
+        if (result.sucesso) { window.location.href = `/download/${result.arquivo}`; Notificacao.show('PDF gerado com sucesso!'); }
+        else { Notificacao.show(result.erro || 'Erro ao gerar PDF', 'danger'); }
+    } catch (error) { console.error(error); Notificacao.show('Erro de conexão', 'danger'); }
+    finally { Loading.hide(); }
+}
+
 function selecionarInvestimento(element) {
     document.querySelectorAll('.investimento-card').forEach(c => c.classList.remove('selected'));
     element.classList.add('selected');

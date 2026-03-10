@@ -6,7 +6,6 @@ import locale
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 
-# Configuração de locale para formato brasileiro
 try:
     locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 except:
@@ -14,8 +13,6 @@ except:
         locale.setlocale(locale.LC_ALL, 'Portuguese_Brazil.1252')
     except:
         pass
-
-# ==================== ENUMS ====================
 
 class TipoIndexador(Enum):
     CDI = "CDI"
@@ -26,15 +23,12 @@ class TipoIR(Enum):
     ISENTO = "Isento"
     REGRESSIVO = "Tabela Regressiva"
 
-# Tabela de IR (dias, alíquota %)
 TABELA_IR = [
     (180, 22.5),
     (360, 20.0),
     (720, 17.5),
     (float('inf'), 15.0)
 ]
-
-# ==================== CLASSES DE DADOS ====================
 
 @dataclass
 class ProjecaoMensal:
@@ -65,23 +59,33 @@ class ResultadoSimulacao:
     taxa_anual: float
     aporte_mensal: float
     projecoes: List[ProjecaoMensal] = field(default_factory=list)
-    volatilidade: float = 0
-    sharpe_ratio: float = 0
-    inflacao_total: float = 0
-    montante_real: float = 0
+    volatilidade: float = 0.0
+    sharpe_ratio: float = 0.0
 
 @dataclass
 class ParametrosSimulacao:
     valor_inicial: float
     meses: int
-    aporte_mensal: float = 0
+    aporte_mensal: float = 0.0
     taxa_cdi: float = 0.10
     percentual_cdi: float = 1.0
     ipca: float = 0.04
     taxa_prefixada: float = 0.05
-    inflacao: float = 0.04   # inflação anual esperada
+    inflacao: float = 0.04
 
-# ==================== CALCULADOR DE IR ====================
+class Formatador:
+    _instance = None
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+    def moeda(self, valor: float) -> str:
+        try:
+            return locale.currency(valor, grouping=True, symbol='R$')
+        except:
+            return f"R$ {valor:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    def porcentagem(self, valor: float) -> str:
+        return f"{valor:.2f}%".replace(".", ",")
 
 class CalculadorIR:
     @staticmethod
@@ -90,8 +94,6 @@ class CalculadorIR:
             if dias <= limite:
                 return ali
         return 15.0
-
-# ==================== ANALISADOR DE RISCO ====================
 
 class AnalisadorRisco:
     @staticmethod
@@ -109,43 +111,32 @@ class AnalisadorRisco:
         variancia = sum((r - media) ** 2 for r in retornos) / len(retornos)
         volat_mensal = math.sqrt(variancia)
         return volat_mensal * math.sqrt(12) * 100
-
     @staticmethod
     def sharpe(rentabilidade: float, risco: float) -> float:
-        if risco <= 0:
+        if risco <= 0 or math.isnan(risco) or math.isinf(risco):
             return 0.0
         return (rentabilidade/100 - 0.10) / (risco/100)
-
-# ==================== CLASSE BASE ====================
 
 class Investimento(ABC):
     def __init__(self, nome: str, tipo_ir: TipoIR, indexador: TipoIndexador):
         self.nome = nome
         self.tipo_ir = tipo_ir
         self.indexador = indexador
-
     @abstractmethod
     def taxa_mensal(self, params: ParametrosSimulacao) -> float:
         pass
-
     def taxa_anual(self, params: ParametrosSimulacao) -> float:
         tm = self.taxa_mensal(params)
         return (1 + tm) ** 12 - 1
-
     def calcular(self, params: ParametrosSimulacao) -> ResultadoSimulacao:
         tm = self.taxa_mensal(params)
-
-        # Montante final com valor inicial e aportes
         montante = params.valor_inicial * (1 + tm) ** params.meses
         if params.aporte_mensal > 0 and tm > 0:
             montante += params.aporte_mensal * (((1 + tm) ** params.meses - 1) / tm)
         elif params.aporte_mensal > 0:
             montante += params.aporte_mensal * params.meses
-
         total_investido = params.valor_inicial + params.aporte_mensal * params.meses
         lucro_bruto = montante - total_investido
-
-        # IR
         if self.tipo_ir != TipoIR.ISENTO:
             dias = params.meses * 30
             aliquota_ir = CalculadorIR.aliquota(dias)
@@ -153,42 +144,29 @@ class Investimento(ABC):
         else:
             aliquota_ir = 0.0
             imposto = 0.0
-
         montante_liquido = montante - imposto
         lucro_liquido = montante_liquido - total_investido
-
-        # Rentabilidades percentuais
         if params.valor_inicial > 0:
             rent_bruta = (montante / params.valor_inicial - 1) * 100
             rent_liquida = (montante_liquido / params.valor_inicial - 1) * 100
         else:
             rent_bruta = rent_liquida = 0.0
-
-        # Inflação no período
         inflacao_total = ((1 + params.inflacao) ** (params.meses / 12) - 1) * 100
         rent_real = rent_liquida - inflacao_total
-        montante_real = montante_liquido / (1 + inflacao_total/100)
-
-        # Projeções mensais
         projecoes = []
         montante_atual = params.valor_inicial
         total_investido_atual = params.valor_inicial
         imposto_acumulado = 0.0
-
         for mes in range(1, params.meses + 1):
             rendimento_mes = montante_atual * tm
             montante_atual += rendimento_mes
-
             if mes > 1 and params.aporte_mensal > 0:
                 montante_atual += params.aporte_mensal
                 total_investido_atual += params.aporte_mensal
-
             if self.tipo_ir != TipoIR.ISENTO:
                 imposto_mes = rendimento_mes * (aliquota_ir / 100)
                 imposto_acumulado += imposto_mes
-
             rent_acum = (montante_atual / params.valor_inicial - 1) * 100 if params.valor_inicial > 0 else 0
-
             projecoes.append(ProjecaoMensal(
                 mes=mes,
                 data=(datetime.now() + timedelta(days=30*mes)).strftime('%m/%Y'),
@@ -198,12 +176,9 @@ class Investimento(ABC):
                 rentabilidade_acumulada=rent_acum,
                 imposto=imposto_acumulado
             ))
-
-        # Risco
         valores = [p.montante for p in projecoes]
         volatilidade = AnalisadorRisco.volatilidade(valores)
         sharpe = AnalisadorRisco.sharpe(rent_liquida, volatilidade)
-
         return ResultadoSimulacao(
             nome=self.nome,
             montante_bruto=montante,
@@ -223,65 +198,41 @@ class Investimento(ABC):
             aporte_mensal=params.aporte_mensal,
             projecoes=projecoes,
             volatilidade=volatilidade,
-            sharpe_ratio=sharpe,
-            inflacao_total=inflacao_total,
-            montante_real=montante_real
+            sharpe_ratio=sharpe
         )
 
-# ==================== IMPLEMENTAÇÕES CONCRETAS ====================
-
 class CDB(Investimento):
-    def __init__(self):
-        super().__init__("CDB", TipoIR.REGRESSIVO, TipoIndexador.CDI)
-    def taxa_mensal(self, params):
-        return (params.taxa_cdi * params.percentual_cdi) / 12
-
+    def __init__(self): super().__init__("CDB", TipoIR.REGRESSIVO, TipoIndexador.CDI)
+    def taxa_mensal(self, params): return (params.taxa_cdi * params.percentual_cdi) / 12
 class LCI(Investimento):
-    def __init__(self):
-        super().__init__("LCI", TipoIR.ISENTO, TipoIndexador.CDI)
-    def taxa_mensal(self, params):
-        return (params.taxa_cdi * params.percentual_cdi) / 12
-
+    def __init__(self): super().__init__("LCI", TipoIR.ISENTO, TipoIndexador.CDI)
+    def taxa_mensal(self, params): return (params.taxa_cdi * params.percentual_cdi) / 12
 class LCA(Investimento):
-    def __init__(self):
-        super().__init__("LCA", TipoIR.ISENTO, TipoIndexador.CDI)
-    def taxa_mensal(self, params):
-        return (params.taxa_cdi * params.percentual_cdi) / 12
-
+    def __init__(self): super().__init__("LCA", TipoIR.ISENTO, TipoIndexador.CDI)
+    def taxa_mensal(self, params): return (params.taxa_cdi * params.percentual_cdi) / 12
 class CRI(Investimento):
-    def __init__(self):
-        super().__init__("CRI", TipoIR.ISENTO, TipoIndexador.IPCA)
+    def __init__(self): super().__init__("CRI", TipoIR.ISENTO, TipoIndexador.IPCA)
     def taxa_mensal(self, params):
         taxa_anual = (1 + params.ipca) * (1 + params.taxa_prefixada) - 1
         return (1 + taxa_anual) ** (1/12) - 1
-
 class CRA(Investimento):
-    def __init__(self):
-        super().__init__("CRA", TipoIR.ISENTO, TipoIndexador.IPCA)
+    def __init__(self): super().__init__("CRA", TipoIR.ISENTO, TipoIndexador.IPCA)
     def taxa_mensal(self, params):
         taxa_anual = (1 + params.ipca) * (1 + params.taxa_prefixada) - 1
         return (1 + taxa_anual) ** (1/12) - 1
-
 class IPCAPlus(Investimento):
-    def __init__(self):
-        super().__init__("IPCA+", TipoIR.REGRESSIVO, TipoIndexador.IPCA)
+    def __init__(self): super().__init__("IPCA+", TipoIR.REGRESSIVO, TipoIndexador.IPCA)
     def taxa_mensal(self, params):
         taxa_anual = (1 + params.ipca) * (1 + params.taxa_prefixada) - 1
         return (1 + taxa_anual) ** (1/12) - 1
-
 class Prefixado(Investimento):
-    def __init__(self):
-        super().__init__("Prefixado", TipoIR.REGRESSIVO, TipoIndexador.PREFIXADO)
-    def taxa_mensal(self, params):
-        return (1 + params.taxa_prefixada) ** (1/12) - 1
-
-# ==================== FACTORY ====================
+    def __init__(self): super().__init__("Prefixado", TipoIR.REGRESSIVO, TipoIndexador.PREFIXADO)
+    def taxa_mensal(self, params): return (1 + params.taxa_prefixada) ** (1/12) - 1
 
 class InvestimentoFactory:
     @staticmethod
     def todos() -> List[Investimento]:
         return [CDB(), LCI(), LCA(), CRI(), CRA(), IPCAPlus(), Prefixado()]
-
     @staticmethod
     def por_id(id: int) -> Optional[Investimento]:
         lista = InvestimentoFactory.todos()

@@ -2,7 +2,6 @@
 {% block title %}Comparação - Simulador de Investimentos{% endblock %}
 {% block content %}
 <h1 class="page-title"><i class="fas fa-scale-balanced"></i> Comparação de Investimentos</h1>
-
 <div class="grid">
     <div class="card">
         <div class="card-header"><i class="fas fa-sliders-h"></i><h2>Parâmetros da Comparação</h2></div>
@@ -13,10 +12,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-clock"></i> Período (meses)</label>
-                <div class="range-container">
-                    <input type="range" class="range-slider" id="comp_meses" min="1" max="480" value="12" step="1">
-                    <span class="range-value" id="comp_meses_valor">12 meses</span>
-                </div>
+                <input type="number" class="form-control" id="comp_meses" min="1" max="480" value="12" required>
             </div>
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-calendar-plus"></i> Aporte Mensal (R$)</label>
@@ -24,25 +20,16 @@
             </div>
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-chart-line"></i> Inflação Anual (%)</label>
-                <div class="range-container">
-                    <input type="range" class="range-slider" id="comp_inflacao" min="0" max="20" value="4" step="0.1">
-                    <span class="range-value" id="comp_inflacao_valor">4,0%</span>
-                </div>
+                <input type="number" class="form-control" id="comp_inflacao" min="0" max="20" step="0.1" value="4">
             </div>
             <h3 style="margin: 1.5rem 0 1rem;">Cenário Econômico</h3>
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-percent"></i> CDI (% a.a.)</label>
-                <div class="range-container">
-                    <input type="range" class="range-slider" id="comp_cdi" min="0" max="30" value="10" step="0.1">
-                    <span class="range-value" id="comp_cdi_valor">10,0%</span>
-                </div>
+                <input type="number" class="form-control" id="comp_cdi" min="0" max="30" step="0.1" value="10" required>
             </div>
             <div class="form-group">
                 <label class="form-label"><i class="fas fa-tachometer-alt"></i> IPCA (% a.a.)</label>
-                <div class="range-container">
-                    <input type="range" class="range-slider" id="comp_ipca" min="0" max="20" value="4" step="0.1">
-                    <span class="range-value" id="comp_ipca_valor">4,0%</span>
-                </div>
+                <input type="number" class="form-control" id="comp_ipca" min="0" max="20" step="0.1" value="4" required>
             </div>
             <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-chart-bar"></i> Comparar</button>
         </form>
@@ -50,15 +37,14 @@
     <div class="card">
         <div class="card-header"><i class="fas fa-info-circle"></i><h2>Métricas Analisadas</h2></div>
         <ul style="list-style: none;">
-            <li style="margin: 1rem 0;"><i class="fas fa-check-circle" style="color: var(--success);"></i> <strong>Montante Final:</strong> Valor líquido</li>
-            <li style="margin: 1rem 0;"><i class="fas fa-check-circle" style="color: var(--success);"></i> <strong>Rentabilidade Real:</strong> Descontando inflação</li>
-            <li style="margin: 1rem 0;"><i class="fas fa-check-circle" style="color: var(--success);"></i> <strong>Volatilidade:</strong> Risco</li>
+            <li style="margin: 1rem 0;"><i class="fas fa-check-circle" style="color: var(--success);"></i> <strong>Montante Final:</strong> Valor líquido ao final do período</li>
+            <li style="margin: 1rem 0;"><i class="fas fa-check-circle" style="color: var(--success);"></i> <strong>Rentabilidade Real:</strong> Descontando a inflação</li>
+            <li style="margin: 1rem 0;"><i class="fas fa-check-circle" style="color: var(--success);"></i> <strong>Volatilidade:</strong> Medida de risco do investimento</li>
             <li style="margin: 1rem 0;"><i class="fas fa-check-circle" style="color: var(--success);"></i> <strong>Índice de Sharpe:</strong> Retorno ajustado ao risco</li>
         </ul>
-        <div class="alert alert-info"><i class="fas fa-lightbulb"></i> <span><strong>Sharpe > 1:</strong> Retorno excelente</span></div>
+        <div class="alert alert-info" style="margin-top: 1rem;"><i class="fas fa-lightbulb"></i> <span><strong>Sharpe > 1:</strong> Retorno excelente para o risco</span></div>
     </div>
 </div>
-
 <div class="chart-container"><canvas id="grafico-comparativo"></canvas></div>
 <div id="comparacao-container"></div>
 {% endblock %}
