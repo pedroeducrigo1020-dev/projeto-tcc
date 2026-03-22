@@ -1,79 +1,115 @@
 {% extends "base.html" %}
 
 {% block title %}Guia de Investimentos - Simulador{% endblock %}
+{% block og_title %}Guia Completo de Investimentos{% endblock %}
+{% block twitter_title %}Guia Completo de Investimentos{% endblock %}
 
 {% block content %}
 <h1 class="page-title">
-    <i class="fas fa-info-circle"></i>
+    <i class="fas fa-info-circle" aria-hidden="true"></i>
     Guia Completo de Investimentos
 </h1>
 
 <div class="grid">
+    <!-- CDB -->
     <div class="card">
         <div class="card-header">
-            <i class="fas fa-university"></i>
+            <i class="fas fa-university" aria-hidden="true"></i>
             <h2>CDB - Certificado de Depósito Bancário</h2>
         </div>
-        <p>Emitido por bancos para captar recursos. É uma das opções mais comuns e acessíveis.</p>
+        <p>Emitido por bancos para captar recursos. É uma das opções mais comuns e acessíveis do mercado de renda fixa.</p>
         <ul class="feature-list">
-            <li><i class="fas fa-check-circle"></i> Proteção FGC até R$ 250 mil por CPF/instituição</li>
-            <li><i class="fas fa-check-circle"></i> IR regressivo: 22,5% até 15%</li>
-            <li><i class="fas fa-check-circle"></i> Indexação: CDI, IPCA ou prefixado</li>
-            <li><i class="fas fa-check-circle"></i> Liquidez: Diária (maioria) ou no vencimento</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Proteção FGC até R$ 250 mil por CPF/instituição</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> IR regressivo: 22,5% até 15%</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Indexação: CDI, IPCA ou prefixado</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Liquidez: Diária (maioria) ou no vencimento</li>
         </ul>
     </div>
-    
+
+    <!-- LCI/LCA -->
     <div class="card">
         <div class="card-header">
-            <i class="fas fa-home"></i>
+            <i class="fas fa-home" aria-hidden="true"></i>
             <h2>LCI/LCA - Letras de Crédito</h2>
         </div>
-        <p>Lastro em créditos imobiliários (LCI) ou do agronegócio (LCA).</p>
+        <p>Lastro em créditos imobiliários (LCI) ou do agronegócio (LCA). Investimentos isentos de IR.</p>
         <ul class="feature-list">
-            <li><i class="fas fa-check-circle"></i> ✅ ISENTO de Imposto de Renda</li>
-            <li><i class="fas fa-check-circle"></i> Carência mínima de 90 dias</li>
-            <li><i class="fas fa-check-circle"></i> Proteção FGC até R$ 250 mil</li>
-            <li><i class="fas fa-check-circle"></i> Ideal para: curto/médio prazo</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> ✅ ISENTO de Imposto de Renda</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Carência mínima de 90 dias</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Proteção FGC até R$ 250 mil</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Ideal para: curto/médio prazo</li>
         </ul>
     </div>
-    
+
+    <!-- CRI/CRA -->
     <div class="card">
         <div class="card-header">
-            <i class="fas fa-building"></i>
+            <i class="fas fa-building" aria-hidden="true"></i>
             <h2>CRI/CRA - Certificados de Recebíveis</h2>
         </div>
-        <p>Lastro em recebíveis imobiliários (CRI) ou do agronegócio (CRA).</p>
+        <p>Lastro em recebíveis imobiliários (CRI) ou do agronegócio (CRA). Geralmente atrelados ao IPCA.</p>
         <ul class="feature-list">
-            <li><i class="fas fa-check-circle"></i> ✅ ISENTO de Imposto de Renda</li>
-            <li><i class="fas fa-check-circle"></i> Indexação: IPCA+ ou prefixado</li>
-            <li><i class="fas fa-check-circle"></i> Liquidez: Geralmente apenas no vencimento</li>
-            <li><i class="fas fa-check-circle"></i> Ideal para: médio/longo prazo</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> ✅ ISENTO de Imposto de Renda</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Indexação: IPCA+ ou prefixado</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Liquidez: Geralmente apenas no vencimento</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Ideal para: médio/longo prazo</li>
         </ul>
     </div>
-    
+
+    <!-- IPCA+ -->
     <div class="card">
         <div class="card-header">
-            <i class="fas fa-chart-line"></i>
+            <i class="fas fa-chart-line" aria-hidden="true"></i>
             <h2>IPCA+ (Tesouro Direto)</h2>
         </div>
-        <p>Título público federal - o investimento mais seguro do país.</p>
+        <p>Título público federal - o investimento mais seguro do país, com proteção contra inflação.</p>
         <ul class="feature-list">
-            <li><i class="fas fa-check-circle"></i> Garantido pelo Tesouro Nacional</li>
-            <li><i class="fas fa-check-circle"></i> Indexação: IPCA + taxa prefixada</li>
-            <li><i class="fas fa-check-circle"></i> IR regressivo (igual ao CDB)</li>
-            <li><i class="fas fa-check-circle"></i> Ideal para: longo prazo e proteção da inflação</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Garantido pelo Tesouro Nacional</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Indexação: IPCA + taxa prefixada</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> IR regressivo (igual ao CDB)</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Ideal para: longo prazo e proteção da inflação</li>
+        </ul>
+    </div>
+
+    <!-- Tesouro Direto -->
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-landmark" aria-hidden="true"></i>
+            <h2>Tesouro Direto (Selic e Prefixado)</h2>
+        </div>
+        <p>Títulos públicos federais: Tesouro Selic (pós-fixado) e Tesouro Prefixado.</p>
+        <ul class="feature-list">
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Garantido pelo Tesouro Nacional</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> IR regressivo (igual ao CDB)</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Liquidez diária</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Ideal para reserva de emergência (Selic)</li>
+        </ul>
+    </div>
+
+    <!-- Debêntures -->
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-file-invoice" aria-hidden="true"></i>
+            <h2>Debêntures</h2>
+        </div>
+        <p>Títulos de dívida de empresas. Podem ser incentivadas (isentas) ou não incentivadas.</p>
+        <ul class="feature-list">
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Geralmente atreladas ao IPCA ou CDI</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Risco de crédito da empresa emissora</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Isenção de IR para incentivadas</li>
+            <li><i class="fas fa-check-circle" aria-hidden="true"></i> Prazo longo e baixa liquidez</li>
         </ul>
     </div>
 </div>
 
+<!-- Exemplo Prático -->
 <div class="card">
     <div class="card-header">
-        <i class="fas fa-calculator"></i>
+        <i class="fas fa-calculator" aria-hidden="true"></i>
         <h2>Exemplo Prático de Comparação</h2>
     </div>
-    
-    <p>Para um investimento de R$ 10.000 por 2 anos:</p>
-    
+    <p>Para um investimento de <strong>R$ 10.000</strong> por <strong>2 anos</strong> (considerando CDI a 10% a.a.):</p>
+
     <div class="table-container">
         <table>
             <thead>
@@ -100,45 +136,54 @@
                     <td>Isento (R$ 0)</td>
                     <td class="result-value">R$ 11.995,00</td>
                 </tr>
-                <tr>
-                    <td><strong>Economia</strong></td>
-                    <td colspan="4">Com LCI: R$ 262,50 a mais que CDB</td>
+                <tr style="background: var(--success-light);">
+                    <td colspan="5"><strong>💡 Economia com LCI: R$ 262,50 a mais que CDB</strong></td>
                 </tr>
             </tbody>
         </table>
     </div>
-    
-    <div class="alert alert-success" style="margin-top: 1rem;">
-        <i class="fas fa-lightbulb"></i>
-        <strong>Conclusão:</strong> Para prazos médios (até 2 anos), a isenção de IR geralmente compensa taxas ligeiramente menores em LCI/LCA.
+
+    <div class="alert alert-success">
+        <i class="fas fa-lightbulb" aria-hidden="true"></i>
+        <div>
+            <strong>Conclusão:</strong> Para prazos médios (até 2 anos), a isenção de IR geralmente compensa taxas ligeiramente menores em LCI/LCA.
+        </div>
     </div>
 </div>
 
+<!-- Dicas Importantes -->
 <div class="card">
     <div class="card-header">
-        <i class="fas fa-tasks"></i>
-        <h2>Dicas Importantes</h2>
+        <i class="fas fa-tasks" aria-hidden="true"></i>
+        <h2>Dicas Importantes para Investidores</h2>
     </div>
-    
     <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));">
-        <div>
-            <h3>✅ Para prazos curtos (&lt; 2 anos)</h3>
-            <p>LCI/LCA geralmente são melhores devido à isenção de IR, mesmo com taxas um pouco menores.</p>
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="color: var(--success); margin-bottom: 0.5rem;">
+                <i class="fas fa-clock" aria-hidden="true"></i> Prazos curtos (&lt; 2 anos)
+            </h3>
+            <p style="margin: 0;">LCI/LCA geralmente são melhores devido à isenção de IR, mesmo com taxas um pouco menores.</p>
         </div>
-        
-        <div>
-            <h3>✅ Para prazos longos (&gt; 3 anos)</h3>
-            <p>CRI/CRA e IPCA+ se destacam pela proteção contra inflação e isenção fiscal.</p>
+
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="color: var(--info); margin-bottom: 0.5rem;">
+                <i class="fas fa-calendar-alt" aria-hidden="true"></i> Prazos longos (&gt; 3 anos)
+            </h3>
+            <p style="margin: 0;">CRI/CRA e IPCA+ se destacam pela proteção contra inflação e isenção fiscal.</p>
         </div>
-        
-        <div>
-            <h3>✅ Diversificação</h3>
-            <p>Distribua seus investimentos entre diferentes tipos e instituições para reduzir riscos.</p>
+
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="color: var(--warning); margin-bottom: 0.5rem;">
+                <i class="fas fa-layer-group" aria-hidden="true"></i> Diversificação
+            </h3>
+            <p style="margin: 0;">Distribua seus investimentos entre diferentes tipos e instituições para reduzir riscos.</p>
         </div>
-        
-        <div>
-            <h3>✅ Verifique o rating</h3>
-            <p>Antes de investir, verifique a classificação de risco da instituição emissora.</p>
+
+        <div class="card" style="margin-bottom: 0;">
+            <h3 style="color: var(--primary); margin-bottom: 0.5rem;">
+                <i class="fas fa-shield-alt" aria-hidden="true"></i> Verifique o rating
+            </h3>
+            <p style="margin: 0;">Antes de investir, verifique a classificação de risco da instituição emissora.</p>
         </div>
     </div>
 </div>

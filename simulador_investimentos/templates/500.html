@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Erro no Servidor - 500{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 4rem 2rem;">
+    <div style="font-size: 8rem; margin-bottom: 1rem;">🔧</div>
+    <h1 style="font-size: 4rem; color: var(--danger); margin-bottom: 1rem;">500</h1>
+    <h2 style="font-size: 1.5rem; color: var(--text-secondary); margin-bottom: 2rem;">Erro interno no servidor</h2>
+    <p style="color: var(--text-muted); margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+        Ocorreu um erro inesperado em nosso servidor. Nossa equipe foi notificada e está trabalhando para resolver o problema.
+        Por favor, tente novamente em alguns instantes.
+    </p>
+    <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/" class="btn btn-primary">
+            <i class="fas fa-home" aria-hidden="true"></i> Voltar para o Início
+        </a>
+        <button onclick="window.location.reload()" class="btn btn-outline">
+            <i class="fas fa-redo" aria-hidden="true"></i> Tentar Novamente
+        </button>
+    </div>
+</div>
+{% endblock %}

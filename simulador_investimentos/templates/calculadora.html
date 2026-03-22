@@ -1,24 +1,25 @@
 {% extends "base.html" %}
 
-{% block title %}Calculadora de Taxas - Simulador{% endblock %}
+{% block title %}Calculadora de Taxas - Simulador de Investimentos{% endblock %}
+{% block og_title %}Calculadora de Taxas Equivalentes{% endblock %}
+{% block twitter_title %}Calculadora de Taxas Equivalentes{% endblock %}
 
 {% block content %}
 <h1 class="page-title">
-    <i class="fas fa-percent"></i>
+    <i class="fas fa-percent" aria-hidden="true"></i>
     Calculadora de Taxas Equivalentes
 </h1>
 
 <div class="grid">
     <div class="card">
         <div class="card-header">
-            <i class="fas fa-calculator"></i>
+            <i class="fas fa-calculator" aria-hidden="true"></i>
             <h2>Conversão de Taxas</h2>
         </div>
-        
         <form id="form-calculadora" onsubmit="event.preventDefault(); calcularTaxaEquivalente();">
             <div class="form-group">
                 <label class="form-label" for="tipo_conversao">
-                    <i class="fas fa-exchange-alt"></i> Tipo de Conversão
+                    <i class="fas fa-exchange-alt" aria-hidden="true"></i> Tipo de Conversão
                 </label>
                 <select class="form-control" id="tipo_conversao" required>
                     <option value="cdb_para_isento">CDB → LCI/LCA (Isento)</option>
@@ -26,45 +27,42 @@
                     <option value="ipca_para_cdb">IPCA+ → CDB</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label" for="taxa_original">
-                    <i class="fas fa-percent"></i> Taxa Original (% a.a.)
+                    <i class="fas fa-percent" aria-hidden="true"></i> Taxa Original (% a.a.)
                 </label>
-                <input type="number" class="form-control" id="taxa_original" 
-                       min="0" max="30" step="0.1" value="10.0" required>
+                <input type="number" class="form-control" id="taxa_original" min="0" max="50" step="0.1" value="10.0" required>
             </div>
-            
+
             <div class="form-group" id="campo_ipca" style="display: none;">
                 <label class="form-label" for="ipca_projetado">
-                    <i class="fas fa-chart-line"></i> IPCA Projetado (% a.a.)
+                    <i class="fas fa-chart-line" aria-hidden="true"></i> IPCA Projetado (% a.a.)
                 </label>
-                <input type="number" class="form-control" id="ipca_projetado" 
-                       min="0" max="20" step="0.1" value="4.0">
+                <input type="number" class="form-control" id="ipca_projetado" min="0" max="20" step="0.1" value="4.0">
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label" for="prazo_dias">
-                    <i class="fas fa-calendar-alt"></i> Prazo (dias)
+                    <i class="fas fa-calendar-alt" aria-hidden="true"></i> Prazo (dias)
                 </label>
-                <input type="number" class="form-control" id="prazo_dias" 
-                       min="1" max="3600" value="360" required>
+                <input type="number" class="form-control" id="prazo_dias" min="1" max="3600" value="360" required>
             </div>
-            
+
             <button type="submit" class="btn btn-primary" style="width: 100%;">
-                <i class="fas fa-calculator"></i> Calcular Taxa Equivalente
+                <i class="fas fa-calculator" aria-hidden="true"></i> Calcular Taxa Equivalente
             </button>
         </form>
-        
+
         <div id="resultado-taxa" style="margin-top: 1.5rem;"></div>
     </div>
-    
+
     <div class="card">
         <div class="card-header">
-            <i class="fas fa-info-circle"></i>
+            <i class="fas fa-info-circle" aria-hidden="true"></i>
             <h2>Tabela de IR</h2>
         </div>
-        
+
         <div class="table-container">
             <table>
                 <thead>
@@ -76,26 +74,26 @@
                 <tbody>
                     <tr>
                         <td>Até 180 dias</td>
-                        <td>22,5%</td>
+                        <td><strong>22,5%</strong></td>
                     </tr>
                     <tr>
                         <td>181 a 360 dias</td>
-                        <td>20,0%</td>
+                        <td><strong>20,0%</strong></td>
                     </tr>
                     <tr>
                         <td>361 a 720 dias</td>
-                        <td>17,5%</td>
+                        <td><strong>17,5%</strong></td>
                     </tr>
                     <tr>
                         <td>Acima de 720 dias</td>
-                        <td>15,0%</td>
+                        <td><strong>15,0%</strong></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        
-        <div class="alert alert-info" style="margin-top: 1rem;">
-            <i class="fas fa-lightbulb"></i>
+
+        <div class="alert alert-info">
+            <i class="fas fa-lightbulb" aria-hidden="true"></i>
             <div>
                 <strong>Fórmula de equivalência:</strong><br>
                 Taxa CDB = Taxa Isenta ÷ (1 - Alíquota IR)<br>
@@ -104,11 +102,13 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
+{% block scripts %}
 <script>
-document.getElementById('tipo_conversao').addEventListener('change', function() {
-    const campoIpca = document.getElementById('campo_ipca');
-    campoIpca.style.display = this.value === 'ipca_para_cdb' ? 'block' : 'none';
-});
+    document.getElementById('tipo_conversao').addEventListener('change', function() {
+        const campoIpca = document.getElementById('campo_ipca');
+        campoIpca.style.display = this.value === 'ipca_para_cdb' ? 'block' : 'none';
+    });
 </script>
 {% endblock %}

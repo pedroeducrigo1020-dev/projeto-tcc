@@ -1,26 +1,29 @@
 {% extends "base.html" %}
 
 {% block title %}Nova Simulação - Simulador de Investimentos{% endblock %}
+{% block og_title %}Simule seu Investimento{% endblock %}
+{% block twitter_title %}Simule seu Investimento{% endblock %}
 
 {% block content %}
 <h1 class="page-title">
-    <i class="fas fa-calculator"></i>
+    <i class="fas fa-calculator" aria-hidden="true"></i>
     Nova Simulação
 </h1>
 
 <div class="grid">
+    <!-- Seleção de Investimento -->
     <div class="card">
         <div class="card-header">
-            <i class="fas fa-chart-pie"></i>
+            <i class="fas fa-chart-pie" aria-hidden="true"></i>
             <h2>Escolha o Investimento</h2>
         </div>
         <p>Selecione o tipo de investimento que deseja simular:</p>
-        
+
         <div class="investimentos-grid">
             {% for key, inv in investimentos.items() %}
-            <div class="investimento-card" onclick="selecionarInvestimento('{{ key }}', this)">
+            <div class="investimento-card" onclick="selecionarInvestimento('{{ key }}', this)" role="button" tabindex="0" aria-label="Selecionar {{ inv.nome }}">
                 <div class="investimento-icon">
-                    <i class="fas fa-chart-line"></i>
+                    <i class="fas fa-chart-line" aria-hidden="true"></i>
                 </div>
                 <div class="investimento-title">{{ inv.nome }}</div>
                 <div>
@@ -30,97 +33,133 @@
                     <span class="investimento-tag">{{ inv.tipo_indexador.value }}</span>
                 </div>
                 {% if inv.carencia_dias > 0 %}
-                <small style="display: block; margin-top: 0.5rem; color: #7f8c8d;">
-                    ⏳ Carência: {{ inv.carencia_dias }} dias
+                <small style="display: block; margin-top: 0.5rem; color: var(--text-muted);">
+                    <i class="fas fa-hourglass-half" aria-hidden="true"></i> Carência: {{ inv.carencia_dias }} dias
                 </small>
                 {% endif %}
             </div>
             {% endfor %}
         </div>
-        
-        <input type="hidden" id="tipo_investimento" name="tipo_investimento">
+
+        <input type="hidden" id="tipo_investimento" name="tipo_investimento" required>
+        <div id="erro-investimento" class="alert alert-danger" style="display: none;">
+            <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+            <span>Selecione um investimento para continuar</span>
+        </div>
     </div>
-    
+
+    <!-- Parâmetros -->
     <div class="card">
         <div class="card-header">
-            <i class="fas fa-sliders-h"></i>
+            <i class="fas fa-sliders-h" aria-hidden="true"></i>
             <h2>Parâmetros da Simulação</h2>
         </div>
-        
-        <form id="form-simulacao" onsubmit="event.preventDefault(); realizarSimulacao();">
+
+        <form id="form-simulacao" onsubmit="event.preventDefault(); validarESimular();">
             <div class="form-group">
                 <label class="form-label" for="valor_inicial">
-                    <i class="fas fa-coins"></i> Valor Inicial (R$)
+                    <i class="fas fa-coins" aria-hidden="true"></i> Valor Inicial (R$)
                 </label>
-                <input type="text" class="form-control moeda" id="valor_inicial" 
-                       placeholder="R$ 1.000,00" value="1000,00" required>
+                <input type="text" class="form-control moeda" id="valor_inicial" placeholder="R$ 1.000,00" value="1.000,00" required aria-required="true">
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label" for="meses">
-                    <i class="fas fa-clock"></i> Período (meses)
+                    <i class="fas fa-clock" aria-hidden="true"></i> Período (meses)
                 </label>
-                <input type="number" class="form-control" id="meses" 
-                       min="1" max="480" value="12" required>
+                <input type="number" class="form-control" id="meses" min="1" max="480" value="12" required aria-required="true">
+                <small style="color: var(--text-muted);">Máximo: 480 meses (40 anos)</small>
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label" for="aporte_mensal">
-                    <i class="fas fa-calendar-plus"></i> Aporte Mensal (R$)
+                    <i class="fas fa-calendar-plus" aria-hidden="true"></i> Aporte Mensal (R$)
                 </label>
-                <input type="text" class="form-control moeda" id="aporte_mensal" 
-                       placeholder="R$ 0,00" value="0,00">
+                <input type="text" class="form-control moeda" id="aporte_mensal" placeholder="R$ 0,00" value="0,00">
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label" for="taxa_cdi">
-                    <i class="fas fa-percent"></i> CDI Atual (% a.a.)
+                    <i class="fas fa-percent" aria-hidden="true"></i> CDI Atual (% a.a.)
                 </label>
-                <input type="number" class="form-control" id="taxa_cdi" 
-                       min="0" max="30" step="0.1" value="10.0" required>
+                <input type="number" class="form-control" id="taxa_cdi" min="0" max="30" step="0.1" value="10.0" required aria-required="true">
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label" for="percentual_cdi">
-                    <i class="fas fa-chart-bar"></i> Percentual do CDI (%)
+                    <i class="fas fa-chart-bar" aria-hidden="true"></i> Percentual do CDI (%)
                 </label>
-                <input type="number" class="form-control" id="percentual_cdi" 
-                       min="0" max="200" step="1" value="100" required>
+                <input type="number" class="form-control" id="percentual_cdi" min="0" max="200" step="1" value="100" required aria-required="true">
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label" for="ipca">
-                    <i class="fas fa-tachometer-alt"></i> IPCA Projetado (% a.a.)
+                    <i class="fas fa-tachometer-alt" aria-hidden="true"></i> IPCA Projetado (% a.a.)
                 </label>
-                <input type="number" class="form-control" id="ipca" 
-                       min="0" max="20" step="0.1" value="4.0" required>
+                <input type="number" class="form-control" id="ipca" min="0" max="20" step="0.1" value="4.0" required aria-required="true">
             </div>
-            
+
             <div class="form-group">
                 <label class="form-label" for="taxa_prefixada">
-                    <i class="fas fa-plus-circle"></i> Taxa Prefixada (% a.a.)
+                    <i class="fas fa-plus-circle" aria-hidden="true"></i> Taxa Prefixada (% a.a.)
                 </label>
-                <input type="number" class="form-control" id="taxa_prefixada" 
-                       min="0" max="20" step="0.1" value="5.0" required>
+                <input type="number" class="form-control" id="taxa_prefixada" min="0" max="20" step="0.1" value="5.0" required aria-required="true">
             </div>
-            
+
             <button type="submit" class="btn btn-primary" style="width: 100%;">
-                <i class="fas fa-play"></i> Simular Investimento
+                <i class="fas fa-play" aria-hidden="true"></i> Simular Investimento
             </button>
         </form>
     </div>
 </div>
 
+<!-- Resultado -->
 <div id="resultado-container"></div>
+{% endblock %}
 
+{% block scripts %}
 <script>
 function selecionarInvestimento(key, element) {
+    // Remove seleção anterior
     document.querySelectorAll('.investimento-card').forEach(card => {
         card.classList.remove('selected');
+        card.setAttribute('aria-selected', 'false');
     });
-    
+
+    // Adiciona seleção ao elemento clicado
     element.classList.add('selected');
+    element.setAttribute('aria-selected', 'true');
+
+    // Atualiza o input hidden
     document.getElementById('tipo_investimento').value = key;
+
+    // Esconde mensagem de erro se existir
+    const erroDiv = document.getElementById('erro-investimento');
+    if (erroDiv) erroDiv.style.display = 'none';
 }
+
+function validarESimular() {
+    const tipo = document.getElementById('tipo_investimento').value;
+    if (!tipo) {
+        const erroDiv = document.getElementById('erro-investimento');
+        if (erroDiv) {
+            erroDiv.style.display = 'flex';
+            erroDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        Notificacao.show('Selecione um tipo de investimento!', 'warning');
+        return;
+    }
+    realizarSimulacao();
+}
+
+// Permitir seleção com teclado
+document.querySelectorAll('.investimento-card').forEach(card => {
+    card.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            this.click();
+        }
+    });
+});
 </script>
 {% endblock %}
