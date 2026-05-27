@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Invest2Smart</title>
+<!-- Fonte Inter (Estilo Profissional) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Pular para conteúdo</a>
+
+<header role="banner">
+  <div class="header-inner">
+    <div class="logo" role="img" aria-label="Invest2Smart">
+      <img class="logo-img logo-light" src="C:\Users\pedrogomes\Desktop\tcc\assets\claro.png" alt="Invest2Smart" height="40"/>
+      <img class="logo-img logo-dark" src="C:\Users\pedrogomes\Desktop\tcc\assets\escuro.png" alt="Invest2Smart" height="40"/>
+    </div>
+    <nav id="nav" role="navigation" aria-label="Menu principal"></nav>
+    <button id="theme-btn" title="Alternar entre tema claro e escuro" aria-label="Alternar tema">🌙</button>
+  </div>
+</header>
+
+<div id="toast-container" role="status" aria-live="polite"></div>
+
+<div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-box">
+    <h3 id="modal-title">Confirmar ação</h3>
+    <p id="modal-body">Tem certeza?</p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="modal-cancel">Cancelar</button>
+      <button class="btn btn-danger" id="modal-confirm">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<main id="main-content">
+
+  <!-- ============================================================ HOME (DASHBOARD) -->
+  <div id="page-home" class="page active" role="main">
+    <div class="hero" aria-label="Apresentação do simulador">
+      <div class="hero-icon" aria-hidden="true">$</div>
+      <h1>Simulador de Investimentos</h1>
+      <p>Compare CDB, LCI, LCA, CRI, CRA, IPCA+, Tesouro e muito mais. Cálculo automático de IR, aportes mensais e índice Sharpe.</p>
+    </div>
+
+    <!-- CARDS PRINCIPAIS (ESTILO DASHBOARD) -->
+    <div class="feature-cards">
+      <div class="card card-action" onclick="goTo('simulacao')" role="button" tabindex="0" aria-label="Ir para simulação">
+        <div class="feature-icon" aria-hidden="true">🧮</div>
+        <div class="card-title">Nova Simulação</div>
+        <p style="font-size:.88rem;color:var(--text-muted);line-height:1.6;margin-bottom:1rem">
+          Simule rendimento com juros compostos, aportes mensais e IR automático.
+        </p>
+        <button class="btn btn-primary btn-full" tabindex="-1">▶ Simular</button>
+      </div>
+      <div class="card card-action" onclick="goTo('comparacao')" role="button" tabindex="0" aria-label="Ir para comparação">
+        <div class="feature-icon" aria-hidden="true">⚖️</div>
+        <div class="card-title">Comparar Todos</div>
+        <p style="font-size:.88rem;color:var(--text-muted);line-height:1.6;margin-bottom:1rem">
+          Ranking completo dos 12 investimentos com gráfico e exportação CSV.
+        </p>
+        <button class="btn btn-primary btn-full" tabindex="-1">⚖ Comparar</button>
+      </div>
+      <div class="card card-action" onclick="goTo('calculadora')" role="button" tabindex="0" aria-label="Ir para calculadora de taxas">
+        <div class="feature-icon" aria-hidden="true">📐</div>
+        <div class="card-title">Calculadora de Taxas</div>
+        <p style="font-size:.88rem;color:var(--text-muted);line-height:1.6;margin-bottom:1rem">
+          Converta CDB ↔ LCI/LCA e IPCA+ ↔ CDB considerando IR do prazo.
+        </p>
+        <button class="btn btn-primary btn-full" tabindex="-1">📐 Calcular</button>
+      </div>
+    </div>
+
+    <!-- ALERTA DE DICA -->
+    <div class="alert alert-info" role="note">
+      <span aria-hidden="true">💡</span>
+      <span><strong>Dica do investidor:</strong> Para prazos menores que 2 anos, LCI/LCA geralmente superam o CDB — mesmo com taxas menores — graças à isenção de IR. Para longo prazo, títulos IPCA+ protegem contra inflação.</span>
+    </div>
+
+    <!-- DASHBOARD RÁPIDO (KPI) -->
+    <div class="grid-4" style="margin-bottom:1.5rem">
+      <div class="card" style="text-align:center;padding:1.25rem;background:var(--bg);border:1px solid var(--border);">
+        <div style="font-size:1.8rem;margin-bottom:.4rem;color:var(--accent);">🏦</div>
+        <div style="font-size:1.8rem;font-weight:900;color:var(--text);">12+</div>
+        <div style="font-size:.8rem;color:var(--text-muted);font-weight:600;">Tipos de Investimentos</div>
+      </div>
+      <div class="card" style="text-align:center;padding:1.25rem;background:var(--bg);border:1px solid var(--border);">
+        <div style="font-size:1.8rem;margin-bottom:.4rem;color:var(--success);">✅</div>
+        <div style="font-size:1.8rem;font-weight:900;color:var(--text);">100%</div>
+        <div style="font-size:.8rem;color:var(--text-muted);font-weight:600;">Gratuito</div>
+      </div>
+      <div class="card" style="text-align:center;padding:1.25rem;background:var(--bg);border:1px solid var(--border);">
+        <div style="font-size:1.8rem;margin-bottom:.4rem;color:var(--accent);">🛡️</div>
+        <div style="font-size:1.8rem;font-weight:900;color:var(--text);">FGC</div>
+        <div style="font-size:.8rem;color:var(--text-muted);font-weight:600;">Proteção Garantida</div>
+      </div>
+      <div class="card" style="text-align:center;padding:1.25rem;background:var(--bg);border:1px solid var(--border);">
+        <div style="font-size:1.8rem;margin-bottom:.4rem;color:var(--warn);">📊</div>
+        <div style="font-size:1.8rem;font-weight:900;color:var(--text);">IR</div>
+        <div style="font-size:.8rem;color:var(--text-muted);font-weight:600;">Cálculo Automático</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ SIMULAÇÃO -->
+  <div id="page-simulacao" class="page">
+    <div class="breadcrumb" aria-label="Localização atual">
+      <span onclick="goTo('home')" style="cursor:pointer">🏠 Início</span>
+      <span class="sep">›</span>
+      <span>🧮 Simulação</span>
+    </div>
+    <h1 style="font-size:1.5rem;font-weight:800;margin-bottom:1.25rem">🧮 Nova Simulação</h1>
+    <div id="sim-global-error" class="alert alert-error" role="alert" style="display:none">
+      <span>⛔</span><span id="sim-error-msg"></span>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:1.25rem">
+      <div class="card">
+        <div class="card-title">📋 Escolha o Investimento</div>
+        <div class="inv-grid" id="inv-picker" role="listbox" aria-label="Tipos de investimento"></div>
+        <div id="inv-alert" class="alert alert-error" role="alert" style="display:none">
+          ⛔ Selecione um investimento antes de simular.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">💰 Parâmetros da Simulação</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s-valor">Valor Inicial (R$)</label>
+            <input id="s-valor" type="number" value="1000" min="1" step="100" aria-describedby="s-valor-hint"/>
+            <span class="field-hint" id="s-valor-hint">Mínimo: R$ 1,00</span>
+            <span class="field-error" id="s-valor-err">Valor inicial deve ser maior que zero.</span>
+          </div>
+          <div class="form-group">
+            <label for="s-meses">Período (meses)</label>
+            <input id="s-meses" type="number" value="12" min="1" max="480" aria-describedby="s-meses-hint"/>
+            <span class="field-hint" id="s-meses-hint">De 1 a 480 meses</span>
+            <span class="field-error" id="s-meses-err">Período deve ser entre 1 e 480 meses.</span>
+          </div>
+          <div class="form-group">
+            <label for="s-aporte">Aporte Mensal (R$)</label>
+            <input id="s-aporte" type="number" value="0" min="0" step="50"/>
+            <span class="field-hint">0 = sem aportes mensais</span>
+          </div>
+          <div class="form-group">
+            <label for="s-cdi">CDI atual (% a.a.)</label>
+            <input id="s-cdi" type="number" value="10.5" step="0.1" min="0" max="100" aria-describedby="s-cdi-hint"/>
+            <span class="field-hint" id="s-cdi-hint">Taxa Selic/CDI do momento</span>
+            <span class="field-error" id="s-cdi-err">CDI deve ser entre 0% e 100%.</span>
+          </div>
+          <div class="form-group">
+            <label for="s-perc-cdi">% do CDI contratado</label>
+            <input id="s-perc-cdi" type="number" value="100" min="1" max="200" aria-describedby="s-pcdi-hint"/>
+            <span class="field-hint" id="s-pcdi-hint">Ex: 95 = 95% do CDI</span>
+            <span class="field-error" id="s-pcdi-err">Percentual deve ser entre 1% e 200%.</span>
+          </div>
+          <div class="form-group">
+            <label for="s-ipca">IPCA Projetado (% a.a.)</label>
+            <input id="s-ipca" type="number" value="4.5" step="0.1" min="0" max="50"/>
+            <span class="field-hint">Projeção de inflação anual</span>
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label for="s-prefix">Taxa Prefixada (% a.a.)</label>
+            <input id="s-prefix" type="number" value="5" step="0.1" min="0" max="100" aria-describedby="s-prefix-hint"/>
+            <span class="field-hint" id="s-prefix-hint">Usada para IPCA+ e Tesouro Prefixado</span>
+          </div>
+        </div>
+        <br>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <button class="btn btn-primary" id="btn-simular" onclick="executarSimulacao()" style="flex:1">▶ Simular</button>
+          <button class="btn btn-secondary btn-sm" onclick="resetSimulacao()" title="Limpar campos e resultado">🔄 Limpar</button>
+        </div>
+        <div class="progress-bar-wrap" id="prog-wrap"><div class="progress-bar" id="prog-bar"></div></div>
+      </div>
+    </div>
+
+    <div id="result-section">
+      <div id="carencia-alert" class="alert alert-warn" role="alert" style="display:none">
+        ⚠️ <span id="carencia-msg"></span>
+      </div>
+      <div class="card" style="border-left:4px solid var(--accent);margin-bottom:1.25rem">
+        <div class="result-header">
+          <span aria-hidden="true">✅</span>
+          <h2 id="res-titulo">Resultado</h2>
+        </div>
+        <div class="grid-4" id="res-stats" style="margin-bottom:1rem"></div>
+        <div style="display:flex;gap:.5rem;justify-content:flex-end;flex-wrap:wrap;margin-top:1rem">
+          <button class="btn btn-outline btn-sm" onclick="exportarTXT()" aria-label="Exportar relatório em TXT">📄 Exportar TXT</button>
+          <button class="btn btn-secondary btn-sm" onclick="resetSimulacao()">🔄 Nova Simulação</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📈 Evolução Mensal
+          <span style="font-size:.78rem;color:var(--text-muted);font-weight:400">— Saldo bruto vs total investido ao longo do tempo</span>
+        </div>
+        <div class="chart-box"><canvas id="chart-sim" aria-label="Gráfico de evolução mensal do investimento"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ COMPARAÇÃO -->
+  <div id="page-comparacao" class="page">
+    <div class="breadcrumb"><span onclick="goTo('home')" style="cursor:pointer">🏠 Início</span><span class="sep">›</span><span>⚖️ Comparação</span></div>
+    <h1 style="font-size:1.5rem;font-weight:800;margin-bottom:1.25rem">⚖️ Comparar Investimentos</h1>
+    <div class="grid-2" style="margin-bottom:1.25rem">
+      <div class="card">
+        <div class="card-title">📊 Parâmetros</div>
+        <div class="form-grid">
+          <div class="form-group"><label for="c-valor">Valor Inicial (R$)</label><input id="c-valor" type="number" value="10000" min="1"></div>
+          <div class="form-group"><label for="c-meses">Período (meses)</label><input id="c-meses" type="number" value="12" min="1" max="480"></div>
+          <div class="form-group"><label for="c-aporte">Aporte Mensal (R$)</label><input id="c-aporte" type="number" value="0" min="0"></div>
+          <div class="form-group"><label for="c-cdi">CDI (% a.a.)</label><input id="c-cdi" type="number" value="10.5" step="0.1" min="0"></div>
+          <div class="form-group"><label for="c-perc">% do CDI</label><input id="c-perc" type="number" value="100" min="1" max="200"><span class="field-hint">Aplicado a todos CDB/LCI/LCA</span></div>
+          <div class="form-group"><label for="c-ipca">IPCA Projetado (%)</label><input id="c-ipca" type="number" value="4.5" step="0.1" min="0"></div>
+          <div class="form-group" style="grid-column:1/-1"><label for="c-prefix">Taxa Prefixada (%)</label><input id="c-prefix" type="number" value="5" step="0.1" min="0"></div>
+        </div>
+        <br>
+        <button class="btn btn-primary btn-full" id="btn-comparar" onclick="executarComparacao()">⚖ Comparar Todos</button>
+        <div class="progress-bar-wrap" id="prog-wrap-c"><div class="progress-bar" id="prog-bar-c"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">ℹ️ O que será comparado</div>
+        <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:.75rem">Todos os 12 tipos com os mesmos parâmetros, lado a lado:</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.3rem;font-size:.82rem" id="comp-list"></div>
+        <div class="alert alert-info" style="margin-top:1rem;font-size:.82rem">
+          📌 IR calculado pela tabela regressiva. Carência verificada automaticamente.
+        </div>
+      </div>
+    </div>
+
+    <div id="comp-results" style="display:none">
+      <div class="card" style="margin-bottom:1.25rem">
+        <div class="card-title">📊 Gráfico Comparativo — Montante Líquido</div>
+        <div class="chart-box"><canvas id="chart-comp" aria-label="Gráfico comparativo de montante líquido"></canvas></div>
+      </div>
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+          <div class="card-title" style="margin:0">🏆 Ranking</div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <button class="btn btn-outline btn-sm" id="btn-sort" onclick="toggleSort()" aria-label="Alternar ordenação">🔃 Por Sharpe</button>
+            <button class="btn btn-outline btn-sm" onclick="exportarCSV()" aria-label="Exportar CSV">⬇ CSV</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table role="table" aria-label="Ranking de investimentos">
+            <thead><tr><th>Pos.</th><th>Investimento</th><th>Indexador</th><th style="text-align:right">Montante Líq.</th><th style="text-align:right">Rentab. Líq.</th><th>IR</th><th style="text-align:right">Sharpe</th><th>Carência</th><tr></thead>
+            <tbody id="comp-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ CALCULADORA -->
+  <div id="page-calculadora" class="page">
+    <div class="breadcrumb"><span onclick="goTo('home')" style="cursor:pointer">🏠 Início</span><span class="sep">›</span><span>📐 Calculadora de Taxas</span></div>
+    <h1 style="font-size:1.5rem;font-weight:800;margin-bottom:1.25rem">📐 Calculadora de Taxas Equivalentes</h1>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">🔄 Conversão de Taxas</div>
+        <div class="form-group" style="margin-bottom:1rem">
+          <label for="tax-tipo">Tipo de Conversão</label>
+          <select id="tax-tipo" onchange="toggleIpca()" aria-describedby="tax-tipo-hint">
+            <option value="cdb_isento">CDB → LCI/LCA (tributado para isento)</option>
+            <option value="isento_cdb">LCI/LCA → CDB (isento para tributado)</option>
+            <option value="ipca_cdb">IPCA+ → CDB equivalente</option>
+          </select>
+          <span class="field-hint" id="tax-tipo-hint">Escolha a direção da conversão</span>
+        </div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="tax-taxa">Taxa Original (% a.a.)</label>
+            <input id="tax-taxa" type="number" value="10" step="0.1" min="0" max="100"/>
+            <span class="field-error" id="tax-taxa-err">Taxa deve ser entre 0% e 100%.</span>
+          </div>
+          <div class="form-group">
+            <label for="tax-dias">Prazo (dias)</label>
+            <input id="tax-dias" type="number" value="360" min="1" max="9999" aria-describedby="tax-dias-hint"/>
+            <span class="field-hint" id="tax-dias-hint">Define a alíquota de IR</span>
+          </div>
+          <div class="form-group" id="ipca-group" style="display:none;grid-column:1/-1">
+            <label for="tax-ipca">IPCA Projetado (% a.a.)</label>
+            <input id="tax-ipca" type="number" value="4.5" step="0.1" min="0"/>
+          </div>
+        </div>
+        <br>
+        <button class="btn btn-primary btn-full" onclick="calcularTaxaEquivalente()">📐 Calcular Taxa Equivalente</button>
+        <div id="tax-result" style="display:none" class="tax-result-box" role="status" aria-live="polite">
+          <div style="font-size:.85rem;color:var(--accent-dk);margin-bottom:.25rem" id="tax-desc"></div>
+          <div class="result-rate" id="tax-value" aria-label="Taxa equivalente calculada"></div>
+          <div style="font-size:.8rem;color:var(--text-muted);margin-top:.25rem">ao ano</div>
+          <div style="font-size:.78rem;color:var(--text-muted);margin-top:.3rem" id="tax-ir-info"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📋 Tabela Regressiva de IR</div>
+        <div class="table-wrap" style="margin-bottom:1.25rem">
+          <table aria-label="Tabela regressiva de IR">
+            <thead><tr><th>Prazo</th><th>Alíquota IR</th></tr></thead>
+            <tbody>
+              <tr><td>Até 180 dias</td><td style="color:var(--danger);font-weight:700">22,5%</td></tr>
+              <tr><td>181 a 360 dias</td><td style="color:#ea580c;font-weight:700">20,0%</td></tr>
+              <tr><td>361 a 720 dias</td><td style="color:var(--warn);font-weight:700">17,5%</td></tr>
+              <tr><td>Acima de 720 dias</td><td style="color:var(--success);font-weight:700">15,0%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="alert alert-info" style="font-size:.82rem;margin-bottom:.75rem">
+          <div><strong>Fórmulas:</strong><br>
+          <code>Taxa CDB = Taxa Isenta ÷ (1 − Alíquota IR)</code><br>
+          <code>Taxa Isenta = Taxa CDB × (1 − Alíquota IR)</code></div>
+        </div>
+        <div class="alert alert-warn" style="font-size:.82rem">
+          <div><strong>Exemplo prático:</strong><br>LCI a 90% CDI (9% a.a.) por 2 anos equivale a CDB de:<br>
+          <strong>9% ÷ (1 − 0,175) = 10,91% a.a.</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ HISTÓRICO -->
+  <div id="page-historico" class="page">
+    <div class="breadcrumb"><span onclick="goTo('home')" style="cursor:pointer">🏠 Início</span><span class="sep">›</span><span>📜 Histórico</span></div>
+    <h1 style="font-size:1.5rem;font-weight:800;margin-bottom:1.25rem">📜 Histórico de Simulações</h1>
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem">
+        <div class="card-title" style="margin:0">🕐 Simulações Realizadas</div>
+        <button class="btn btn-danger btn-sm" onclick="confirmarLimpar()" aria-label="Limpar histórico">🗑 Limpar Histórico</button>
+      </div>
+      <div id="hist-content"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================ GUIA -->
+  <div id="page-guia" class="page">
+    <div class="breadcrumb"><span onclick="goTo('home')" style="cursor:pointer">🏠 Início</span><span class="sep">›</span><span>📖 Guia</span></div>
+    <h1 style="font-size:1.5rem;font-weight:800;margin-bottom:1.25rem">📖 Guia de Investimentos</h1>
+    <div class="grid-3" style="margin-bottom:1.25rem" id="guia-cards"></div>
+
+    <div class="card" style="margin-bottom:1.25rem">
+      <div class="card-title">📊 Exemplo Prático</div>
+      <p style="font-size:.88rem;color:var(--text-muted);margin-bottom:1rem">R$ 10.000 por 2 anos (CDI a 10% a.a.)</p>
+      <div class="table-wrap">
+        <table><thead><tr><th>Investimento</th><th>Taxa</th><th style="text-align:right">Montante Bruto</th><th>IR</th><th style="text-align:right">Montante Líquido</th></tr></thead>
+        <tbody>
+          <tr><td><strong>CDB</strong></td><td>100% CDI</td><td style="text-align:right">R$ 12.100,00</td><td style="color:var(--danger)">17,5% (R$ 367,50)</td><td style="text-align:right;font-weight:700">R$ 11.732,50</td></tr>
+          <tr><td><strong>LCI</strong></td><td>95% CDI</td><td style="text-align:right">R$ 11.995,00</td><td style="color:var(--success);font-weight:700">ISENTO</td><td style="text-align:right;font-weight:700;color:var(--success)">R$ 11.995,00</td></tr>
+          <tr style="background:var(--accent-lt)"><td colspan="5" style="color:var(--accent-dk);font-size:.85rem">💡 LCI rende <strong>R$ 262,50 a mais</strong> mesmo com taxa menor — graças à isenção de IR.</td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="grid-4">
+      <div class="alert alert-success" style="flex-direction:column;gap:.4rem"><strong>⏱ Curto prazo (&lt; 2 anos)</strong><span style="font-size:.85rem">LCI/LCA geralmente superam o CDB pela isenção de IR.</span></div>
+      <div class="alert alert-info" style="flex-direction:column;gap:.4rem"><strong>📅 Longo prazo (&gt; 3 anos)</strong><span style="font-size:.85rem">CRI/CRA e IPCA+ protegem contra inflação.</span></div>
+      <div class="alert alert-warn" style="flex-direction:column;gap:.4rem"><strong>🔀 Diversificação</strong><span style="font-size:.85rem">Distribua entre tipos e instituições.</span></div>
+      <div class="alert" style="flex-direction:column;gap:.4rem;background:#faf5ff;border-color:#a855f7;color:#6b21a8"><strong>⭐ Verifique o rating</strong><span style="font-size:.85rem">Cheque a classificação da instituição emissora.</span></div>
+    </div>
+  </div>
+
+</main>
+
+<footer role="contentinfo">
+  <p>Simulador de Investimentos — TCC &nbsp;|&nbsp; ⚠️ Simulações são apenas ilustrativas. Consulte um especialista financeiro antes de investir.</p>
+</footer>
+
+<script src="script.js" defer></script>
+</body>
+</html>
