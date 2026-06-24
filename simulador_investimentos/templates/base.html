@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Simulador de Investimentos{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo"><i class="fas fa-chart-line"></i> Simulador de Investimentos</a>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}"><i class="fas fa-home"></i> Início</a></li>
+                <li class="nav-item"><a href="/simulacao" class="nav-link {% if request.path == '/simulacao' %}active{% endif %}"><i class="fas fa-calculator"></i> Simular</a></li>
+                <li class="nav-item"><a href="/comparacao" class="nav-link {% if request.path == '/comparacao' %}active{% endif %}"><i class="fas fa-scale-balanced"></i> Comparar</a></li>
+                <li class="nav-item"><a href="/calculadora" class="nav-link {% if request.path == '/calculadora' %}active{% endif %}"><i class="fas fa-percent"></i> Taxas</a></li>
+                <li class="nav-item"><a href="/historico" class="nav-link {% if request.path == '/historico' %}active{% endif %}"><i class="fas fa-history"></i> Histórico</a></li>
+                <li class="nav-item"><a href="/informacoes" class="nav-link {% if request.path == '/informacoes' %}active{% endif %}"><i class="fas fa-info-circle"></i> Guia</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main class="container">{% block content %}{% endblock %}</main>
+    <footer class="footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Simulador de Investimentos. Todos os direitos reservados.</p>
+            <p class="disclaimer"><i class="fas fa-exclamation-triangle"></i> As simulações são apenas ilustrativas. Consulte um especialista antes de investir.</p>
+        </div>
+    </footer>
+    <div id="loading" class="loading"><div class="spinner"></div><p>Processando...</p></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
