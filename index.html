@@ -107,6 +107,7 @@ footer{text-align:center;padding:2rem 1.5rem;border-top:1px solid var(--border);
 /* ============================================================ PAGES */
 .page{display:none;animation:fadeIn .25s ease}
 .page.active{display:block}
+.imp-tab{animation:fadeIn .2s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
 
 /* ============================================================ CARDS & GRID (ESTILO INVESTIDOR10) */
@@ -316,9 +317,9 @@ tr:last-child td{border-bottom:none}
         </p>
         <button class="btn btn-primary btn-full" tabindex="-1">⚖ Comparar</button>
       </div>
-      <div class="card card-action" onclick="goTo('calculadora')" role="button" tabindex="0" aria-label="Ir para calculadora de taxas">
+      <div class="card card-action" onclick="goTo('impostos')" role="button" tabindex="0" aria-label="Ir para página de impostos">
         <div class="feature-icon" aria-hidden="true">📐</div>
-        <div class="card-title">Calculadora de Taxas</div>
+        <div class="card-title">Impostos & IR</div>
         <p style="font-size:.88rem;color:var(--text-muted);line-height:1.6;margin-bottom:1rem">
           Converta CDB ↔ LCI/LCA e IPCA+ ↔ CDB considerando IR do prazo.
         </p>
@@ -508,72 +509,505 @@ tr:last-child td{border-bottom:none}
   </div>
 
   <!-- ============================================================ CALCULADORA -->
-  <div id="page-calculadora" class="page">
-    <div class="breadcrumb"><span onclick="goTo('home')" style="cursor:pointer">🏠 Início</span><span class="sep">›</span><span>📐 Calculadora de Taxas</span></div>
-    <h1 style="font-size:1.5rem;font-weight:800;margin-bottom:1.25rem">📐 Calculadora de Taxas Equivalentes</h1>
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-title">🔄 Conversão de Taxas</div>
-        <div class="form-group" style="margin-bottom:1rem">
-          <label for="tax-tipo">Tipo de Conversão</label>
-          <select id="tax-tipo" onchange="toggleIpca()" aria-describedby="tax-tipo-hint">
-            <option value="cdb_isento">CDB → LCI/LCA (tributado para isento)</option>
-            <option value="isento_cdb">LCI/LCA → CDB (isento para tributado)</option>
-            <option value="ipca_cdb">IPCA+ → CDB equivalente</option>
-          </select>
-          <span class="field-hint" id="tax-tipo-hint">Escolha a direção da conversão</span>
+  <!-- ============================================================ IMPOSTOS -->
+  <div id="page-impostos" class="page">
+    <div class="breadcrumb"><span onclick="goTo('home')" style="cursor:pointer">🏠 Início</span><span class="sep">›</span><span>🧾 Impostos & IR</span></div>
+
+    <!-- HERO -->
+    <div class="hero" style="margin-bottom:1.5rem;padding:2rem 1.5rem">
+      <div class="hero-icon">🧾</div>
+      <h1 style="font-size:1.6rem">Guia Completo de Impostos</h1>
+      <p>Aprenda a declarar o Imposto de Renda corretamente e descubra as melhores estratégias legais para reduzir sua carga tributária em imóveis, veículos, obras de arte, ações e investimentos.</p>
+    </div>
+
+    <!-- TABS DE NAVEGAÇÃO INTERNA -->
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem" id="imp-tabs">
+      <button class="btn btn-primary btn-sm" onclick="showImpTab('tutorial')" id="itab-tutorial">📋 Tutorial IR</button>
+      <button class="btn btn-secondary btn-sm" onclick="showImpTab('calculadora')" id="itab-calculadora">🧮 Calculadora</button>
+      <button class="btn btn-secondary btn-sm" onclick="showImpTab('imoveis')" id="itab-imoveis">🏠 Imóveis</button>
+      <button class="btn btn-secondary btn-sm" onclick="showImpTab('automoveis')" id="itab-automoveis">🚗 Automóveis</button>
+      <button class="btn btn-secondary btn-sm" onclick="showImpTab('artes')" id="itab-artes">🖼️ Obras de Arte</button>
+      <button class="btn btn-secondary btn-sm" onclick="showImpTab('acoes')" id="itab-acoes">📈 Ações</button>
+      <button class="btn btn-secondary btn-sm" onclick="showImpTab('investimentos')" id="itab-investimentos">💰 Investimentos</button>
+    </div>
+
+    <!-- ===================== TAB: TUTORIAL IR ===================== -->
+    <div id="imp-tutorial" class="imp-tab">
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-title">📋 Quem deve declarar o IR em 2025?</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Critério</th><th>Limite / Condição</th></tr></thead>
+            <tbody>
+              <tr><td>Rendimentos tributáveis</td><td style="font-weight:700;color:var(--accent)">Acima de R$ 33.888,00/ano</td></tr>
+              <tr><td>Rendimentos isentos/não tributáveis</td><td style="font-weight:700;color:var(--accent)">Acima de R$ 200.000,00</td></tr>
+              <tr><td>Receita bruta de atividade rural</td><td style="font-weight:700;color:var(--accent)">Acima de R$ 169.440,00</td></tr>
+              <tr><td>Bens e direitos</td><td style="font-weight:700;color:var(--accent)">Superiores a R$ 800.000,00</td></tr>
+              <tr><td>Ganho de capital na venda de bens</td><td>Qualquer valor</td></tr>
+              <tr><td>Operações em bolsa (ações)</td><td>Qualquer valor alienado</td></tr>
+              <tr><td>Residente no exterior em qualquer mês</td><td>Sim → obrigado</td></tr>
+            </tbody>
+          </table>
         </div>
-        <div class="form-grid">
-          <div class="form-group">
-            <label for="tax-taxa">Taxa Original (% a.a.)</label>
-            <input id="tax-taxa" type="number" value="10" step="0.1" min="0" max="100"/>
-            <span class="field-error" id="tax-taxa-err">Taxa deve ser entre 0% e 100%.</span>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-title">📅 Passo a Passo: Como declarar</div>
+        <div style="display:flex;flex-direction:column;gap:1rem">
+          <div style="display:flex;gap:1rem;align-items:flex-start">
+            <div style="min-width:36px;height:36px;background:var(--accent);color:#fff;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.9rem">1</div>
+            <div><strong>Baixe o programa IRPF</strong> — Disponível no site da Receita Federal (receita.economia.gov.br). Também disponível via app "Meu Imposto de Renda".</div>
           </div>
-          <div class="form-group">
-            <label for="tax-dias">Prazo (dias)</label>
-            <input id="tax-dias" type="number" value="360" min="1" max="9999" aria-describedby="tax-dias-hint"/>
-            <span class="field-hint" id="tax-dias-hint">Define a alíquota de IR</span>
+          <div style="display:flex;gap:1rem;align-items:flex-start">
+            <div style="min-width:36px;height:36px;background:var(--accent);color:#fff;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.9rem">2</div>
+            <div><strong>Reúna os documentos:</strong> Informe de rendimentos do empregador, extratos de investimentos dos bancos, notas de compra/venda de imóveis, veículos e ações, recibos de despesas médicas e educação, DARF pagos ao longo do ano.</div>
           </div>
-          <div class="form-group" id="ipca-group" style="display:none;grid-column:1/-1">
-            <label for="tax-ipca">IPCA Projetado (% a.a.)</label>
-            <input id="tax-ipca" type="number" value="4.5" step="0.1" min="0"/>
+          <div style="display:flex;gap:1rem;align-items:flex-start">
+            <div style="min-width:36px;height:36px;background:var(--accent);color:#fff;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.9rem">3</div>
+            <div><strong>Declare na ordem correta:</strong> (a) Identificação; (b) Dependentes; (c) Rendimentos tributáveis; (d) Rendimentos isentos; (e) Deduções; (f) Bens e direitos; (g) Dívidas e ônus; (h) Ganhos de capital.</div>
+          </div>
+          <div style="display:flex;gap:1rem;align-items:flex-start">
+            <div style="min-width:36px;height:36px;background:var(--accent);color:#fff;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.9rem">4</div>
+            <div><strong>Escolha o modelo:</strong> <span class="badge badge-blue">Simplificado</span> desconto padrão de 20% (máx. R$ 16.754,34) <strong>ou</strong> <span class="badge badge-green">Completo</span> soma real de todas as deduções. Calcule qual é mais vantajoso.</div>
+          </div>
+          <div style="display:flex;gap:1rem;align-items:flex-start">
+            <div style="min-width:36px;height:36px;background:var(--accent);color:#fff;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:.9rem">5</div>
+            <div><strong>Transmita até o prazo:</strong> Geralmente 31 de maio. Multa por atraso: mínimo R$ 165,74 ou 1% do imposto por mês (máx. 20%).</div>
           </div>
         </div>
-        <br>
-        <button class="btn btn-primary btn-full" onclick="calcularTaxaEquivalente()">📐 Calcular Taxa Equivalente</button>
-        <div id="tax-result" style="display:none" class="tax-result-box" role="status" aria-live="polite">
-          <div style="font-size:.85rem;color:var(--accent-dk);margin-bottom:.25rem" id="tax-desc"></div>
-          <div class="result-rate" id="tax-value" aria-label="Taxa equivalente calculada"></div>
-          <div style="font-size:.8rem;color:var(--text-muted);margin-top:.25rem">ao ano</div>
-          <div style="font-size:.78rem;color:var(--text-muted);margin-top:.3rem" id="tax-ir-info"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-title">💡 Tabela Progressiva do IR 2025</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Base de Cálculo (mensal)</th><th>Alíquota</th><th>Parcela a Deduzir</th></tr></thead>
+            <tbody>
+              <tr><td>Até R$ 2.259,20</td><td style="color:var(--success);font-weight:700">Isento</td><td>—</td></tr>
+              <tr><td>R$ 2.259,21 a R$ 2.826,65</td><td style="color:var(--warn);font-weight:700">7,5%</td><td>R$ 169,44</td></tr>
+              <tr><td>R$ 2.826,66 a R$ 3.751,05</td><td style="color:var(--warn);font-weight:700">15%</td><td>R$ 381,44</td></tr>
+              <tr><td>R$ 3.751,06 a R$ 4.664,68</td><td style="color:#ea580c;font-weight:700">22,5%</td><td>R$ 662,77</td></tr>
+              <tr><td>Acima de R$ 4.664,68</td><td style="color:var(--danger);font-weight:700">27,5%</td><td>R$ 896,00</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="alert alert-info" style="margin-top:1rem;font-size:.83rem">
+          <div>💡 <strong>Como calcular:</strong> Aplique a alíquota sobre a base e subtraia a parcela a deduzir. Ex: renda R$ 5.000 → (5.000 × 27,5%) − 896 = R$ 479,00/mês de IR.</div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title">📋 Tabela Regressiva de IR</div>
-        <div class="table-wrap" style="margin-bottom:1.25rem">
-          <table aria-label="Tabela regressiva de IR">
-            <thead><tr><th>Prazo</th><th>Alíquota IR</th></tr></thead>
-            <tbody>
-              <tr><td>Até 180 dias</td><td style="color:var(--danger);font-weight:700">22,5%</td></tr>
-              <tr><td>181 a 360 dias</td><td style="color:#ea580c;font-weight:700">20,0%</td></tr>
-              <tr><td>361 a 720 dias</td><td style="color:var(--warn);font-weight:700">17,5%</td></tr>
-              <tr><td>Acima de 720 dias</td><td style="color:var(--success);font-weight:700">15,0%</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="alert alert-info" style="font-size:.82rem;margin-bottom:.75rem">
-          <div><strong>Fórmulas:</strong><br>
-          <code>Taxa CDB = Taxa Isenta ÷ (1 − Alíquota IR)</code><br>
-          <code>Taxa Isenta = Taxa CDB × (1 − Alíquota IR)</code></div>
-        </div>
-        <div class="alert alert-warn" style="font-size:.82rem">
-          <div><strong>Exemplo prático:</strong><br>LCI a 90% CDI (9% a.a.) por 2 anos equivale a CDB de:<br>
-          <strong>9% ÷ (1 − 0,175) = 10,91% a.a.</strong></div>
+        <div class="card-title">✅ Deduções Legais — Como pagar menos IR</div>
+        <div class="grid-2">
+          <div>
+            <p style="font-size:.85rem;font-weight:700;margin-bottom:.5rem;color:var(--accent-dk)">Deduções no modelo Completo:</p>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:.4rem;font-size:.85rem">
+              <li>👨‍👩‍👧 <strong>Dependentes:</strong> R$ 2.275,08/ano por dependente</li>
+              <li>🏥 <strong>Despesas médicas:</strong> Sem limite — consultas, exames, plano de saúde, dentista</li>
+              <li>📚 <strong>Educação:</strong> Até R$ 3.561,50/ano por contribuinte ou dependente</li>
+              <li>💰 <strong>Previdência oficial (INSS):</strong> 100% dedutível</li>
+              <li>🏦 <strong>Previdência privada (PGBL):</strong> Até 12% da renda bruta tributável</li>
+              <li>🍽️ <strong>Pensão alimentícia judicial:</strong> Valor integral</li>
+              <li>📝 <strong>Livro-caixa (autônomo):</strong> Despesas de manutenção da atividade</li>
+            </ul>
+          </div>
+          <div>
+            <p style="font-size:.85rem;font-weight:700;margin-bottom:.5rem;color:var(--success)">Estratégias para reduzir o IR:</p>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:.4rem;font-size:.85rem">
+              <li>🏦 Contribuir para <strong>PGBL</strong> (deduz até 12% da renda)</li>
+              <li>📑 Guardar <strong>todas as notas</strong> de despesas médicas</li>
+              <li>👶 Incluir <strong>dependentes</strong> (filhos, cônjuge, pais)</li>
+              <li>💊 Incluir gastos com <strong>plano de saúde</strong> de dependentes</li>
+              <li>📖 Declarar gastos com <strong>escola e faculdade</strong></li>
+              <li>🏠 Deduzir <strong>aluguel pago</strong> (dependendo da situação)</li>
+              <li>⚖️ Usar <strong>prejuízos em bolsa</strong> para abater ganhos futuros</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- ===================== TAB: CALCULADORA ===================== -->
+    <div id="imp-calculadora" class="imp-tab" style="display:none">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">🧮 Calculadora de IR — Pessoa Física</div>
+          <div class="form-group" style="margin-bottom:.75rem">
+            <label>Renda bruta mensal (R$)</label>
+            <input type="number" id="ir-renda" value="5000" min="0" step="100"/>
+          </div>
+          <div class="form-group" style="margin-bottom:.75rem">
+            <label>Contribuição INSS mensal (R$)</label>
+            <input type="number" id="ir-inss" value="550" min="0" step="10"/>
+            <span class="field-hint">Desconto automático no salário</span>
+          </div>
+          <div class="form-group" style="margin-bottom:.75rem">
+            <label>Número de dependentes</label>
+            <input type="number" id="ir-deps" value="0" min="0" max="20" step="1"/>
+            <span class="field-hint">Cada dependente deduz R$ 189,59/mês</span>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem">
+            <label>Contribuição PGBL mensal (R$)</label>
+            <input type="number" id="ir-pgbl" value="0" min="0" step="100"/>
+            <span class="field-hint">Dedutível até 12% da renda bruta anual</span>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="calcularIR()">🧮 Calcular IR</button>
+        </div>
+
+        <div class="card" id="ir-resultado" style="display:none">
+          <div class="card-title">📊 Resultado</div>
+          <div id="ir-res-content"></div>
+        </div>
+        <div class="card" id="ir-placeholder" style="display:flex;align-items:center;justify-content:center;min-height:200px;color:var(--text-muted);font-size:.9rem">
+          Preencha os dados ao lado e clique em Calcular →
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:1rem">
+        <div class="card-title">📊 Calculadora de Ganho de Capital</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Tipo de bem</label>
+            <select id="gc-tipo">
+              <option value="imovel">Imóvel</option>
+              <option value="automovel">Automóvel</option>
+              <option value="arte">Obra de Arte / Antiguidade</option>
+              <option value="outros">Outros bens</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Valor de custo original (R$)</label>
+            <input type="number" id="gc-custo" value="200000" min="0" step="1000"/>
+          </div>
+          <div class="form-group">
+            <label>Valor de venda (R$)</label>
+            <input type="number" id="gc-venda" value="350000" min="0" step="1000"/>
+          </div>
+          <div class="form-group">
+            <label>Custos adicionais (reformas, corretor, etc.) (R$)</label>
+            <input type="number" id="gc-custos" value="20000" min="0" step="1000"/>
+            <span class="field-hint">Somados ao custo de aquisição</span>
+          </div>
+        </div>
+        <div style="margin-top:1rem;display:flex;gap:.75rem;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="calcularGanhoCapital()">📐 Calcular Ganho de Capital</button>
+        </div>
+        <div id="gc-resultado" style="display:none;margin-top:1rem"></div>
+      </div>
+    </div>
+
+    <!-- ===================== TAB: IMÓVEIS ===================== -->
+    <div id="imp-imoveis" class="imp-tab" style="display:none">
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-title">🏠 Imóveis — Como declarar e pagar menos</div>
+        <div class="alert alert-info" style="margin-bottom:1rem;font-size:.85rem">
+          <div>📌 Imóveis devem ser declarados na ficha <strong>"Bens e Direitos"</strong> pelo <strong>valor de custo de aquisição</strong>, nunca pelo valor de mercado atual.</div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <p style="font-weight:700;margin-bottom:.5rem;font-size:.9rem">📝 O que declarar:</p>
+            <ul style="list-style:none;gap:.4rem;display:flex;flex-direction:column;font-size:.85rem">
+              <li>✅ Valor pago na escritura (custo de aquisição)</li>
+              <li>✅ ITBI pago (soma ao custo)</li>
+              <li>✅ Gastos com cartório e registro</li>
+              <li>✅ Reformas e benfeitorias comprovadas</li>
+              <li>✅ Honorários do corretor (na compra)</li>
+              <li>✅ Financiamento: apenas o valor já pago</li>
+            </ul>
+          </div>
+          <div>
+            <p style="font-weight:700;margin-bottom:.5rem;font-size:.9rem">💡 Como reduzir o ganho de capital:</p>
+            <ul style="list-style:none;gap:.4rem;display:flex;flex-direction:column;font-size:.85rem">
+              <li>🏗️ Some todas as <strong>reformas documentadas</strong> ao custo</li>
+              <li>📑 Guarde <strong>notas fiscais</strong> de obras e materiais</li>
+              <li>🏡 <strong>Imóvel único</strong> até R$ 440 mil → isento de ganho de capital</li>
+              <li>💰 <strong>Reinvestir em imóvel</strong> em até 180 dias → isento</li>
+              <li>👴 <strong>Imóvel adquirido antes de 1969</strong> → 100% isento</li>
+              <li>📅 Redutor por <strong>tempo de posse</strong> (imóveis pré-1989)</li>
+              <li>🤝 Venda a prazo: distribui o IR ao longo dos recebimentos</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-title">📊 Alíquotas de Ganho de Capital — Imóveis</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Lucro na venda</th><th>Alíquota</th><th>Prazo de pagamento</th></tr></thead>
+            <tbody>
+              <tr><td>Até R$ 5 milhões</td><td style="color:var(--warn);font-weight:700">15%</td><td rowspan="4" style="color:var(--text-muted);font-size:.82rem">DARF até último dia útil do mês seguinte à venda</td></tr>
+              <tr><td>R$ 5M a R$ 10M</td><td style="color:#ea580c;font-weight:700">17,5%</td></tr>
+              <tr><td>R$ 10M a R$ 30M</td><td style="color:var(--danger);font-weight:700">20%</td></tr>
+              <tr><td>Acima de R$ 30M</td><td style="color:var(--danger);font-weight:700">22,5%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="alert alert-warn" style="margin-top:1rem;font-size:.83rem">
+          <div>⚠️ O DARF (código 4600 para pessoa física) deve ser pago <strong>no mês seguinte à venda</strong>, independentemente da declaração anual. Atraso gera multa de 0,33%/dia + juros Selic.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🏠 Aluguel recebido — Como declarar</div>
+        <div class="grid-2">
+          <div style="font-size:.85rem">
+            <p style="font-weight:700;margin-bottom:.5rem">Tributação do aluguel:</p>
+            <ul style="list-style:none;gap:.35rem;display:flex;flex-direction:column">
+              <li>📋 Declare na ficha <strong>"Rendimentos Tributáveis Recebidos de PF"</strong></li>
+              <li>💡 Se receber de PJ, o IR já vem retido na fonte</li>
+              <li>🔄 Pode deduzir: IPTU, condomínio (se pago pelo locador), intermediação imobiliária</li>
+              <li>📊 Aluguel entra na tabela progressiva (até 27,5%)</li>
+            </ul>
+          </div>
+          <div style="font-size:.85rem">
+            <p style="font-weight:700;margin-bottom:.5rem">Alternativas para reduzir:</p>
+            <ul style="list-style:none;gap:.35rem;display:flex;flex-direction:column">
+              <li>🏢 Criar uma <strong>holding familiar</strong> pode reduzir tributação</li>
+              <li>🎯 <strong>Fundo imobiliário (FII)</strong>: rendimentos isentos de IR para PF</li>
+              <li>📅 Distribuir recebimentos para otimizar a alíquota progressiva</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== TAB: AUTOMÓVEIS ===================== -->
+    <div id="imp-automoveis" class="imp-tab" style="display:none">
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-title">🚗 Automóveis — Regras de IR</div>
+        <div class="alert alert-info" style="margin-bottom:1rem;font-size:.85rem">
+          <div>📌 Veículos são declarados em <strong>"Bens e Direitos" (código 21)</strong> pelo valor de custo — não pela tabela FIPE atual.</div>
+        </div>
+        <div class="grid-2">
+          <div style="font-size:.85rem">
+            <p style="font-weight:700;margin-bottom:.5rem">🔑 Regras principais:</p>
+            <ul style="list-style:none;gap:.4rem;display:flex;flex-direction:column">
+              <li>✅ Veículos até <strong>R$ 35.000</strong> → isentos de ganho de capital</li>
+              <li>✅ Veículos com <strong>desvalorização natural</strong> raramente geram ganho</li>
+              <li>📋 Declare o valor pago + gastos de transferência</li>
+              <li>🔄 Permuta entre veículos: declare cada operação separadamente</li>
+              <li>⚠️ Veículos de coleção, supercarros ou clássicos valorizados: <strong>sujeitos a ganho de capital</strong></li>
+            </ul>
+          </div>
+          <div style="font-size:.85rem">
+            <p style="font-weight:700;margin-bottom:.5rem">💡 Estratégias legais:</p>
+            <ul style="list-style:none;gap:.4rem;display:flex;flex-direction:column">
+              <li>📑 Some ao custo: IPVA, seguro obrigatório pago na compra, despesas de transferência</li>
+              <li>🏢 Veículo usado por MEI/empresa: pode ser ativo da empresa com depreciação</li>
+              <li>💰 Veículo como <strong>bem da empresa</strong>: IPVA e manutenção viram despesa dedutível</li>
+              <li>🎯 Para frotas: planejamento tributário via PJ pode ser vantajoso</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">📊 Isenção automática para veículos</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Situação</th><th>Tributação</th></tr></thead>
+            <tbody>
+              <tr><td>Venda por valor ≤ R$ 35.000</td><td><span class="badge badge-green">Isento</span></td></tr>
+              <tr><td>Venda com prejuízo (valor abaixo do custo)</td><td><span class="badge badge-green">Isento</span></td></tr>
+              <tr><td>Venda com lucro, valor &gt; R$ 35.000</td><td><span class="badge badge-amber">15% a 22,5% sobre o lucro</span></td></tr>
+              <tr><td>Frota de veículos (PJ)</td><td><span class="badge badge-blue">Regras de pessoa jurídica</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="alert alert-warn" style="margin-top:1rem;font-size:.83rem">
+          <div>⚠️ <strong>Atenção:</strong> O limite de R$ 35.000 é por <em>conjunto de alienações do mesmo bem</em>, não por ano. Um carro de coleção vendido por R$ 200.000 comprado por R$ 50.000 gera R$ 150.000 de ganho sujeito ao IR.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== TAB: OBRAS DE ARTE ===================== -->
+    <div id="imp-artes" class="imp-tab" style="display:none">
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-title">🖼️ Obras de Arte, Antiguidades e Joias</div>
+        <div class="alert alert-warn" style="margin-bottom:1rem;font-size:.85rem">
+          <div>⚠️ Obras de arte são ativos com <strong>alto potencial de valorização</strong>. Qualquer lucro na venda está sujeito às alíquotas progressivas de ganho de capital (15% a 22,5%).</div>
+        </div>
+        <div class="grid-2">
+          <div style="font-size:.85rem">
+            <p style="font-weight:700;margin-bottom:.5rem">📋 Como declarar:</p>
+            <ul style="list-style:none;gap:.4rem;display:flex;flex-direction:column">
+              <li>📌 Ficha <strong>"Bens e Direitos"</strong> — código <strong>09 (Obras de Arte)</strong> ou <strong>10 (Joias)</strong></li>
+              <li>📑 Descreva: artista, título, ano, local de aquisição, nota fiscal</li>
+              <li>💰 Declare pelo <strong>custo de aquisição</strong> (nota fiscal, recibo, leilão)</li>
+              <li>🔄 Atualização de valor é <strong>vedada</strong> — mantenha sempre o custo original</li>
+              <li>📤 Na venda: calcule o ganho e pague DARF até o fim do mês seguinte</li>
+            </ul>
+          </div>
+          <div style="font-size:.85rem">
+            <p style="font-weight:700;margin-bottom:.5rem">💡 Estratégias para reduzir o impacto:</p>
+            <ul style="list-style:none;gap:.4rem;display:flex;flex-direction:column">
+              <li>📑 Guarde sempre a <strong>nota fiscal ou laudo de avaliação</strong> original</li>
+              <li>🏛️ Doação para museu/entidade cultural: pode gerar <strong>dedução fiscal</strong> (Lei Rouanet)</li>
+              <li>👨‍👩‍👧 <strong>Doação em vida</strong> com antecipação de herança: ITCMD estadual pode ser menor que IR</li>
+              <li>🏢 Holding patrimonial: planejamento para obras de alto valor</li>
+              <li>🌍 Venda no exterior: regras especiais se o bem estiver fora do país</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">⚖️ Comparativo: Vender vs. Doar obras de arte</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Estratégia</th><th>Imposto</th><th>Quando usar</th></tr></thead>
+            <tbody>
+              <tr><td>Venda direta (PF)</td><td style="color:var(--danger);font-weight:700">15% a 22,5% do lucro</td><td>Quando precisar do recurso financeiro</td></tr>
+              <tr><td>Doação para filho/herdeiro</td><td>ITCMD estadual (2% a 8%)</td><td>Planejamento sucessório de longo prazo</td></tr>
+              <tr><td>Doação para museu (Lei Rouanet)</td><td style="color:var(--success);font-weight:700">Pode ser 0% + dedução de até 6% do IR</td><td>Obras de alto valor artístico</td></tr>
+              <tr><td>Venda via holding PJ</td><td>Depende do regime tributário da empresa</td><td>Coleções de alto valor</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== TAB: AÇÕES ===================== -->
+    <div id="imp-acoes" class="imp-tab" style="display:none">
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-title">📈 Ações e Renda Variável — Regras de IR</div>
+        <div class="grid-2">
+          <div style="font-size:.85rem">
+            <p style="font-weight:700;margin-bottom:.5rem">📋 Regras para ações à vista:</p>
+            <ul style="list-style:none;gap:.4rem;display:flex;flex-direction:column">
+              <li>✅ Venda até <strong>R$ 20.000/mês</strong> → isento de IR (ações à vista)</li>
+              <li>📊 Acima de R$ 20.000: <strong>15% sobre o lucro</strong></li>
+              <li>🔴 Day trade: sempre <strong>20% sobre o lucro</strong> (sem isenção)</li>
+              <li>📅 DARF (código 6015) até último dia útil do mês seguinte</li>
+              <li>🔄 <strong>Prejuízos</strong> podem ser compensados com lucros futuros (mesma categoria)</li>
+            </ul>
+          </div>
+          <div style="font-size:.85rem">
+            <p style="font-weight:700;margin-bottom:.5rem">💰 Ativos isentos de IR para PF:</p>
+            <ul style="list-style:none;gap:.4rem;display:flex;flex-direction:column">
+              <li>🏢 <strong>FII (Fundos Imobiliários):</strong> rendimentos isentos</li>
+              <li>🌾 <strong>CRA e CRI:</strong> rendimentos isentos</li>
+              <li>🏦 <strong>LCI e LCA:</strong> isentos de IR</li>
+              <li>📜 <strong>Debêntures incentivadas:</strong> isentas</li>
+              <li>💵 <strong>Dividendos:</strong> isentos (atualmente)</li>
+              <li>⚠️ JCP (Juros sobre Capital Próprio): tributados a 15%</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-title">📊 Tabela de IR para Renda Variável</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tipo de operação</th><th>Alíquota IR</th><th>IRRF (retido na fonte)</th><th>Isenção</th></tr></thead>
+            <tbody>
+              <tr><td>Ações — mercado à vista</td><td style="font-weight:700;color:var(--warn)">15%</td><td>0,005% (dedo-duro)</td><td>Até R$ 20k/mês</td></tr>
+              <tr><td>Day trade (ações)</td><td style="font-weight:700;color:var(--danger)">20%</td><td>1%</td><td>Não há isenção</td></tr>
+              <tr><td>FIIs — ganho de capital</td><td style="font-weight:700;color:var(--warn)">20%</td><td>0,005%</td><td>Não há isenção</td></tr>
+              <tr><td>FIIs — rendimentos mensais</td><td style="color:var(--success);font-weight:700">Isento</td><td>—</td><td>PF em bolsa regulada</td></tr>
+              <tr><td>BDR</td><td style="font-weight:700;color:var(--warn)">15%</td><td>0,005%</td><td>Até R$ 20k/mês</td></tr>
+              <tr><td>Opções</td><td style="font-weight:700;color:var(--warn)">15% ou 20%</td><td>1% (day) / 0,005%</td><td>—</td></tr>
+              <tr><td>Futuros</td><td style="font-weight:700;color:var(--danger)">20%</td><td>1%</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">💡 Estratégias para reduzir IR em ações</div>
+        <div class="grid-2">
+          <div style="font-size:.85rem">
+            <p style="font-weight:700;margin-bottom:.5rem">Estratégias operacionais:</p>
+            <ul style="list-style:none;gap:.4rem;display:flex;flex-direction:column">
+              <li>📅 Vender até <strong>R$ 20.000/mês</strong> para ficar isento</li>
+              <li>🔄 Usar <strong>prejuízos acumulados</strong> para compensar lucros</li>
+              <li>📊 Preferir ativos <strong>isentos</strong> (FII, LCI, LCA, CRA, CRI)</li>
+              <li>💰 Receber <strong>dividendos</strong> em vez de vender (sem IR sobre dividendo)</li>
+              <li>📋 Manter planilha mensal de todas as operações</li>
+            </ul>
+          </div>
+          <div style="font-size:.85rem">
+            <p style="font-weight:700;margin-bottom:.5rem">Estratégias de longo prazo:</p>
+            <ul style="list-style:none;gap:.4rem;display:flex;flex-direction:column">
+              <li>⏳ <strong>Buy & hold</strong>: lucro não realizado não é tributado</li>
+              <li>🏦 Aportar via <strong>PGBL</strong> e investir o imposto economizado</li>
+              <li>🔁 Rebalancear carteira <strong>dentro dos limites de isenção</strong> mensais</li>
+              <li>🎯 Investir em <strong>ETFs de renda fixa isenta</strong> (FIXA11, etc.)</li>
+              <li>🌎 Diversificar em <strong>BDRs</strong> de empresas com alto dividendo</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== TAB: INVESTIMENTOS ===================== -->
+    <div id="imp-investimentos" class="imp-tab" style="display:none">
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-title">💰 Investimentos de Renda Fixa — IR e Estratégias</div>
+        <div class="table-wrap" style="margin-bottom:1rem">
+          <table>
+            <thead><tr><th>Investimento</th><th>IR</th><th>IOF</th><th>FGC</th><th>Ideal para</th></tr></thead>
+            <tbody>
+              <tr><td><strong>CDB</strong></td><td>Tabela regressiva 15%-22,5%</td><td>Sim (até 30 dias)</td><td>Sim</td><td>Reserva de emergência e médio prazo</td></tr>
+              <tr><td><strong>LCI / LCA</strong></td><td style="color:var(--success);font-weight:700">Isento PF</td><td>Não</td><td>Sim</td><td>Renda fixa com vantagem fiscal</td></tr>
+              <tr><td><strong>LCD</strong></td><td style="color:var(--success);font-weight:700">Isento PF</td><td>Não</td><td>Sim</td><td>Alternativa ao LCI/LCA</td></tr>
+              <tr><td><strong>CRI / CRA</strong></td><td style="color:var(--success);font-weight:700">Isento PF</td><td>Não</td><td>Não</td><td>Diversificação com isenção</td></tr>
+              <tr><td><strong>Debênture Incentivada</strong></td><td style="color:var(--success);font-weight:700">Isento PF</td><td>Não</td><td>Não</td><td>Rendimento superior isento</td></tr>
+              <tr><td><strong>Tesouro Direto (Selic/IPCA+/Prefixado)</strong></td><td>15% a 22,5% (tabela regressiva)</td><td>Sim (até 30 dias)</td><td>Não (risco soberano)</td><td>Segurança + referência</td></tr>
+              <tr><td><strong>Poupança</strong></td><td style="color:var(--success);font-weight:700">Isento PF</td><td>Não</td><td>Sim</td><td>Liquidez imediata (rendimento baixo)</td></tr>
+              <tr><td><strong>Fundos de Renda Fixa</strong></td><td>Tabela regressiva + come-cotas</td><td>Sim</td><td>Não</td><td>Gestão profissional</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="alert alert-info" style="font-size:.83rem">
+          <div>💡 <strong>Come-cotas:</strong> Fundos de renda fixa sofrem antecipação compulsória de IR em maio e novembro (15% ou 20% sobre o rendimento acumulado), mesmo sem resgate. Prefira CDB/LCI/LCA diretos para evitar esse efeito.</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:1rem">
+        <div class="card-title">📋 Tabela Regressiva de IR — Renda Fixa</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Prazo de resgate</th><th>Alíquota IR</th><th>Estratégia</th></tr></thead>
+            <tbody>
+              <tr><td>Até 180 dias</td><td style="color:var(--danger);font-weight:700">22,5%</td><td>Evite resgatar antes de 181 dias</td></tr>
+              <tr><td>181 a 360 dias</td><td style="color:#ea580c;font-weight:700">20,0%</td><td>Aguarde 1 ano para reduzir alíquota</td></tr>
+              <tr><td>361 a 720 dias</td><td style="color:var(--warn);font-weight:700">17,5%</td><td>Bom para médio prazo</td></tr>
+              <tr><td>Acima de 720 dias</td><td style="color:var(--success);font-weight:700">15,0%</td><td>Melhor alíquota para renda fixa tributada</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">🎯 Estratégias de Otimização Fiscal — Resumo</div>
+        <div class="grid-2">
+          <div style="font-size:.85rem">
+            <p style="font-weight:700;margin-bottom:.5rem;color:var(--accent-dk)">Para investidores conservadores:</p>
+            <ul style="list-style:none;gap:.4rem;display:flex;flex-direction:column">
+              <li>🏆 LCI/LCA com carência de 90 dias são melhores que CDB de mesmo rendimento bruto</li>
+              <li>📅 Resgate CDB sempre após 720 dias para pagar só 15%</li>
+              <li>🏦 PGBL: invista até 12% da renda e deduza do IR anual</li>
+              <li>💎 Tesouro IPCA+: protege da inflação com alíquota mínima de 15%</li>
+            </ul>
+          </div>
+          <div style="font-size:.85rem">
+            <p style="font-weight:700;margin-bottom:.5rem;color:var(--success)">Para investidores arrojados:</p>
+            <ul style="list-style:none;gap:.4rem;display:flex;flex-direction:column">
+              <li>🏢 FIIs: rendimentos mensais isentos + ganho de capital a 20%</li>
+              <li>📈 Ações: vender até R$ 20k/mês é isento (operação normal)</li>
+              <li>🔄 Compensar prejuízos de ações com lucros do mesmo tipo</li>
+              <li>🌾 CRA/CRI: isenção total + rendimentos acima da renda fixa bancária</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
+  <!-- FIM IMPOSTOS -->
 
   <!-- ============================================================ HISTÓRICO -->
   <div id="page-historico" class="page">
@@ -695,7 +1129,7 @@ const PAGES = [
   {id:"home",       label:"🏠 Início"},
   {id:"simulacao",  label:"🧮 Simular"},
   {id:"comparacao", label:"⚖️ Comparar"},
-  {id:"calculadora",label:"📐 Taxas"},
+  {id:"impostos",label:"🧾 Impostos"},
   {id:"historico",  label:"📜 Histórico"},
   {id:"guia",       label:"📖 Guia"},
 ];
@@ -1174,50 +1608,92 @@ function exportarCSV() {
 }
 
 /* ================================================================
-   CALCULADORA DE TAXAS (Lógica mantida)
+   IMPOSTOS — TABS, CALCULADORA IR E GANHO DE CAPITAL
    ================================================================ */
-function toggleIpca() {
-  const tipo = document.getElementById('tax-tipo').value;
-  document.getElementById('ipca-group').style.display = tipo==='ipca_cdb' ? 'block' : 'none';
-  document.getElementById('tax-result').style.display = 'none';
+
+function showImpTab(tab) {
+  document.querySelectorAll('.imp-tab').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('#imp-tabs .btn').forEach(b => {
+    b.classList.remove('btn-primary'); b.classList.add('btn-secondary');
+  });
+  const el = document.getElementById('imp-' + tab);
+  if (el) el.style.display = 'block';
+  const btn = document.getElementById('itab-' + tab);
+  if (btn) { btn.classList.remove('btn-secondary'); btn.classList.add('btn-primary'); }
 }
 
-function calcularTaxaEquivalente() {
-  const tipo = document.getElementById('tax-tipo').value;
-  const taxa = parseFloat(document.getElementById('tax-taxa').value);
-  const dias = parseInt(document.getElementById('tax-dias').value);
-  const ipca = parseFloat(document.getElementById('tax-ipca').value) || 0;
+function calcularIR() {
+  const renda = parseFloat(document.getElementById('ir-renda').value) || 0;
+  const inss  = parseFloat(document.getElementById('ir-inss').value)  || 0;
+  const deps  = parseInt(document.getElementById('ir-deps').value)    || 0;
+  const pgbl  = parseFloat(document.getElementById('ir-pgbl').value)  || 0;
 
-  if (isNaN(taxa) || taxa < 0 || taxa > 100) {
-    document.getElementById('tax-taxa-err').classList.add('show');
-    document.getElementById('tax-taxa').classList.add('input-error');
-    return;
+  const dedDep = deps * 189.59;
+  const base = Math.max(0, renda - inss - dedDep - pgbl);
+
+  let ir = 0, aliq = 0, parcela = 0;
+  if (base <= 2259.20) { ir = 0; aliq = 0; }
+  else if (base <= 2826.65) { aliq = 7.5; parcela = 169.44; ir = base * 0.075 - 169.44; }
+  else if (base <= 3751.05) { aliq = 15;  parcela = 381.44; ir = base * 0.15  - 381.44; }
+  else if (base <= 4664.68) { aliq = 22.5;parcela = 662.77; ir = base * 0.225 - 662.77; }
+  else                      { aliq = 27.5;parcela = 896.00; ir = base * 0.275 - 896.00; }
+  ir = Math.max(0, ir);
+
+  const liquido = renda - inss - ir;
+  const efetiva = renda > 0 ? (ir / renda * 100) : 0;
+
+  document.getElementById('ir-placeholder').style.display = 'none';
+  const res = document.getElementById('ir-resultado');
+  res.style.display = 'block';
+  res.querySelector('#ir-res-content').innerHTML = `
+    <div class="grid-2" style="gap:.75rem;margin-bottom:1rem">
+      <div class="stat-box highlight"><div class="stat-label">Base de Cálculo</div><div class="stat-value">${fmt.moeda(base)}</div></div>
+      <div class="stat-box"><div class="stat-label">Alíquota Marginal</div><div class="stat-value" style="color:${aliq>15?'var(--danger)':'var(--success)'}">${aliq.toFixed(1)}%</div></div>
+      <div class="stat-box"><div class="stat-label">IR Mensal</div><div class="stat-value" style="color:var(--danger)">${fmt.moeda(ir)}</div></div>
+      <div class="stat-box"><div class="stat-label">IR Anual Estimado</div><div class="stat-value" style="color:var(--danger)">${fmt.moeda(ir*12)}</div></div>
+      <div class="stat-box highlight"><div class="stat-label">Salário Líquido</div><div class="stat-value" style="color:var(--success)">${fmt.moeda(liquido)}</div></div>
+      <div class="stat-box"><div class="stat-label">Alíquota Efetiva</div><div class="stat-value">${efetiva.toFixed(2)}%</div></div>
+    </div>
+    <div style="font-size:.8rem;color:var(--text-muted)">
+      Deduções: INSS ${fmt.moeda(inss)} + ${deps} dep. ${fmt.moeda(dedDep)} + PGBL ${fmt.moeda(pgbl)} = ${fmt.moeda(inss+dedDep+pgbl)}
+    </div>
+  `;
+}
+
+function calcularGanhoCapital() {
+  const tipo   = document.getElementById('gc-tipo').value;
+  const custo  = parseFloat(document.getElementById('gc-custo').value) || 0;
+  const venda  = parseFloat(document.getElementById('gc-venda').value) || 0;
+  const extras = parseFloat(document.getElementById('gc-custos').value) || 0;
+
+  const custoTotal = custo + extras;
+  const lucro = venda - custoTotal;
+
+  // Isenções especiais
+  let isento = false, motivoIsencao = '';
+  if (tipo === 'automovel' && venda <= 35000) { isento = true; motivoIsencao = 'Veículo vendido por até R$ 35.000 — isento de ganho de capital'; }
+  if (lucro <= 0) { isento = true; motivoIsencao = 'Venda sem lucro (prejuízo ou empate) — não há ganho de capital a tributar'; }
+
+  let ir = 0, aliq = 0;
+  if (!isento && lucro > 0) {
+    if (lucro <= 5000000)       { aliq = 15;   ir = lucro * 0.15; }
+    else if (lucro <= 10000000) { aliq = 17.5; ir = 5000000*0.15 + (lucro-5000000)*0.175; }
+    else if (lucro <= 30000000) { aliq = 20;   ir = 5000000*0.15 + 5000000*0.175 + (lucro-10000000)*0.20; }
+    else                        { aliq = 22.5; ir = 5000000*0.15 + 5000000*0.175 + 20000000*0.20 + (lucro-30000000)*0.225; }
   }
-  document.getElementById('tax-taxa-err').classList.remove('show');
-  document.getElementById('tax-taxa').classList.remove('input-error');
 
-  if (isNaN(dias) || dias < 1) { toast('Prazo inválido.','error'); return; }
-
-  const al = aliquotaIR(dias);
-  const alDecimal = al / 100;
-  let equiv = 0, desc = '';
-
-  if (tipo === 'cdb_isento') {
-    equiv = taxa * (1 - alDecimal);
-    desc = `CDB ${taxa.toFixed(2)}%  →  LCI/LCA equivalente`;
-  } else if (tipo === 'isento_cdb') {
-    equiv = taxa / (1 - alDecimal);
-    desc = `LCI/LCA ${taxa.toFixed(2)}%  →  CDB equivalente`;
-  } else {
-    const totalAnual = ((1 + ipca/100) * (1 + taxa/100) - 1) * 100;
-    equiv = totalAnual / (1 - alDecimal);
-    desc = `IPCA+${taxa.toFixed(2)}% com IPCA ${ipca.toFixed(1)}%  →  CDB equivalente`;
-  }
-
-  document.getElementById('tax-desc').textContent = desc;
-  document.getElementById('tax-value').textContent = equiv.toFixed(2).replace('.',',') + '%';
-  document.getElementById('tax-ir-info').textContent = `Alíquota de IR aplicada: ${al}% (prazo de ${dias} dias)`;
-  document.getElementById('tax-result').style.display = 'block';
+  const el = document.getElementById('gc-resultado');
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div class="grid-2" style="gap:.75rem;margin-bottom:.75rem">
+      <div class="stat-box"><div class="stat-label">Custo Total</div><div class="stat-value">${fmt.moeda(custoTotal)}</div></div>
+      <div class="stat-box"><div class="stat-label">Valor de Venda</div><div class="stat-value">${fmt.moeda(venda)}</div></div>
+      <div class="stat-box ${lucro>0?'highlight':''}"><div class="stat-label">Lucro (Ganho de Capital)</div><div class="stat-value" style="color:${lucro>0?'var(--accent-dk)':'var(--success)'}">${fmt.moeda(lucro)}</div></div>
+      <div class="stat-box"><div class="stat-label">IR a Pagar</div><div class="stat-value" style="color:${ir>0?'var(--danger)':'var(--success)'}">${fmt.moeda(ir)}</div></div>
+    </div>
+    ${isento ? `<div class="alert alert-info" style="font-size:.85rem">✅ <strong>${motivoIsencao}</strong></div>` :
+    ir > 0 ? `<div class="alert alert-warn" style="font-size:.83rem">⚠️ Alíquota aplicada: <strong>${aliq}%</strong>. Pague o DARF até o último dia útil do mês seguinte à venda. Código DARF: <strong>4600</strong> (imóvel/outros PF).</div>` : ''}
+  `;
 }
 
 /* ================================================================
@@ -1304,6 +1780,8 @@ function buildGuia() {
   buildCompList();
   buildGuia();
   document.getElementById('nav-home').classList.add('active');
+  // Init impostos tab
+  if (document.getElementById('imp-tutorial')) showImpTab('tutorial');
   document.getElementById('nav-home').setAttribute('aria-current','page');
 })();
 </script>
